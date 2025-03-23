@@ -6,10 +6,12 @@ local fzf = load_plugin("fzf")
 local conform = load_plugin("conform")
 local comment = load_plugin("comment")
 local autopairs = load_plugin("autopairs")
+local rustace = load_plugin("rustace")
 
 return {
 	fzf,
 	conform,
 	comment,
 	autopairs,
+	rustace,
 }

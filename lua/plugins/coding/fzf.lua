@@ -23,7 +23,7 @@ return {
 					hidden = "nohidden", -- hidden preview settings
 				},
 				-- You can even color your window as well using colorscheme highlights
-				hl = {
+				hls = {
 					border = "FloatBorder",
 					normal = "Normal",
 					title = "Normal",

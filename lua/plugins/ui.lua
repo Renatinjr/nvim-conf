@@ -12,6 +12,8 @@ local git = load_plugin("git")
 local bufferline = load_plugin("bufferline")
 local incline = load_plugin("incline")
 local icons = load_plugin("icons")
+local dash = load_plugin("dash")
+local rustcrates = load_plugin("rustcrates")
 
 return {
 	nvim_tree,
@@ -24,4 +26,6 @@ return {
 	bufferline,
 	incline,
 	icons,
+	dash,
+	rustcrates,
 }

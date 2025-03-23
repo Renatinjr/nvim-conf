@@ -8,7 +8,7 @@ return {
 	},
 	opts = {
 		options = {
-			-- indicator_icon = ">",
+			indicator_icon = " ",
 			close_command = "bp|sp|bn|bd! %d",
 			buffer_close_icon = "󰅙",
 			modified_icon = "",

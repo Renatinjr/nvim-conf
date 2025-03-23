@@ -1,15 +1,14 @@
 return {
 	"b0o/incline.nvim",
-	dependencies = { "craftzdog/solarized-osaka.nvim" },
 	event = "BufReadPre",
 	priority = 1200,
 	config = function()
-		local colors = require("kanagawa-paper.colors").setup()
+		local colors = require("kanagawa.colors").setup({ theme = "wave" }).palette
 		require("incline").setup({
 			highlight = {
 				groups = {
-					InclineNormal = { guibg = colors.magenta500, guifg = colors.base04 },
-					InclineNormalNC = { guifg = colors.violet500, guibg = colors.base03 },
+					InclineNormal = { guibg = colors.sumiInk4, guifg = colors.base02 },
+					InclineNormalNC = { guifg = colors.sumiInk0, guibg = colors.base02 },
 				},
 			},
 			window = { margin = { vertical = 0, horizontal = 1 } },
