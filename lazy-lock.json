@@ -1,0 +1,23 @@
+{
+  "Comment.nvim": { "branch": "master", "commit": "e30b7f2008e52442154b66f7c519bfd2f1e32acb" },
+  "blink.cmp": { "branch": "main", "commit": "4607923f60029f8cb28e6950a078f93fd33e1288" },
+  "commons.nvim": { "branch": "main", "commit": "f0f3ba34abfc02417f2cbd7da26eb3ecea3f3bef" },
+  "conform.nvim": { "branch": "master", "commit": "f9ef25a7ef00267b7d13bfc00b0dea22d78702d5" },
+  "friendly-snippets": { "branch": "main", "commit": "efff286dd74c22f731cdec26a70b46e5b203c619" },
+  "fzf-lua": { "branch": "main", "commit": "bb3e837a963ed4dfad9c8ee7ff58ccf6cc8a71c2" },
+  "gitsigns.nvim": { "branch": "main", "commit": "7010000889bfb6c26065e0b0f7f1e6aa9163edd9" },
+  "heirline.nvim": { "branch": "master", "commit": "af3f441ea10f96105e1af14cd37bf213533812d2" },
+  "indent-blankline.nvim": { "branch": "master", "commit": "005b56001b2cb30bfa61b7986bc50657816ba4ba" },
+  "kanagawa-paper.nvim": { "branch": "master", "commit": "4f0dbbfd9494408c3518f52da61fe8284a6eb90d" },
+  "lazy.nvim": { "branch": "main", "commit": "6c3bda4aca61a13a9c63f1c1d1b16b9d3be90d7a" },
+  "lspkind.nvim": { "branch": "master", "commit": "d79a1c3299ad0ef94e255d045bed9fa26025dab6" },
+  "mason-tool-installer.nvim": { "branch": "main", "commit": "5639d58a3d11ff7c05c8e31e159bfedae55d7961" },
+  "mason.nvim": { "branch": "main", "commit": "fc98833b6da5de5a9c5b1446ac541577059555be" },
+  "nvim-autopairs": { "branch": "master", "commit": "6522027785b305269fa17088395dfc0f456cedd2" },
+  "nvim-lspconfig": { "branch": "master", "commit": "fb733ac734249ccf293e5c8018981d4d8f59fa8f" },
+  "nvim-tree.lua": { "branch": "master", "commit": "44d9b58f11d5a426c297aafd0be1c9d45617a849" },
+  "nvim-treesitter": { "branch": "master", "commit": "e70cb73e943db7483b0ea86a55e80d471bcb995c" },
+  "nvim-web-devicons": { "branch": "master", "commit": "4c3a5848ee0b09ecdea73adcd2a689190aeb728c" },
+  "playground": { "branch": "master", "commit": "ba48c6a62a280eefb7c85725b0915e021a1a0749" },
+  "which-key.nvim": { "branch": "main", "commit": "370ec46f710e058c9c1646273e6b225acf47cbed" }
+}
