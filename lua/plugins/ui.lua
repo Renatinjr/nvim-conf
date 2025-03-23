@@ -8,6 +8,10 @@ local blink = load_plugin("blinkcmp")
 local gitsigns = load_plugin("gitsigns")
 local heirline = load_plugin("heirline")
 local indentblank = load_plugin("indentblank")
+local git = load_plugin("git")
+local bufferline = load_plugin("bufferline")
+local incline = load_plugin("incline")
+local icons = load_plugin("icons")
 
 return {
 	nvim_tree,
@@ -16,4 +20,8 @@ return {
 	gitsigns,
 	heirline,
 	indentblank,
+	git,
+	bufferline,
+	incline,
+	icons,
 }

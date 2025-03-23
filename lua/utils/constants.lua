@@ -1,4 +1,3 @@
--- ---- Constants ----
 local M = {}
 
 M.diagnostic = {
