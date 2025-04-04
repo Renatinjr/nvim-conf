@@ -12,5 +12,6 @@ return {
 		"codelldb",
 		"typescript-language-server",
 		"tailwindcss-language-server",
+		"vtsl",
 	},
 }

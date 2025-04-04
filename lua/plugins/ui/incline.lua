@@ -3,7 +3,7 @@ return {
 	event = "BufReadPre",
 	priority = 1200,
 	config = function()
-		local colors = require("kanagawa.colors").setup({ theme = "wave" }).palette
+		local colors = require("kanagawa.colors").setup({ theme = "dragon" }).palette
 		require("incline").setup({
 			highlight = {
 				groups = {

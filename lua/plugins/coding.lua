@@ -7,6 +7,9 @@ local conform = load_plugin("conform")
 local comment = load_plugin("comment")
 local autopairs = load_plugin("autopairs")
 local rustace = load_plugin("rustace")
+local dap = load_plugin("dap")
+local dapui = load_plugin("dapui")
+local t_tools = load_plugin("typescript-tools")
 
 return {
 	fzf,
@@ -14,4 +17,7 @@ return {
 	comment,
 	autopairs,
 	rustace,
+	dapui,
+	dap,
+	t_tools,
 }

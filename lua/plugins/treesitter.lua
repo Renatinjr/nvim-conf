@@ -56,6 +56,14 @@ return {
 			},
 		},
 		config = function(_, opts)
+			vim.api.nvim_create_autocmd("FileType", {
+				pattern = { "go" },
+				callback = function()
+					opts.highlight = {
+						enable = true,
+					}
+				end,
+			})
 			require("nvim-treesitter.configs").setup(opts)
 
 			vim.filetype.add({

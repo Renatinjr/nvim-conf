@@ -14,6 +14,7 @@ local incline = load_plugin("incline")
 local icons = load_plugin("icons")
 local dash = load_plugin("dash")
 local rustcrates = load_plugin("rustcrates")
+local noice = load_plugin("noice")
 
 return {
 	nvim_tree,
@@ -28,4 +29,5 @@ return {
 	icons,
 	dash,
 	rustcrates,
+	noice,
 }

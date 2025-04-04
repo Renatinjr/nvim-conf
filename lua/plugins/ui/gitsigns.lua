@@ -7,7 +7,7 @@ return {
 		vim.opt.signcolumn = "yes"
 		require("gitsigns").setup({
 			signs = {
-				add = { text = "+" },
+				add = { text = "🞧" },
 				change = { text = "~" },
 				delete = { text = "-" },
 				topdelete = { text = "‾" },

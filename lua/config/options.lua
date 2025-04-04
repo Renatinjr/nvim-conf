@@ -1,5 +1,15 @@
+vim.opt.termguicolors = true
+local signs = { Error = "󰅙 ", Warn = " ", Hint = "💡", Info = " " }
+
 vim.diagnostic.config({
-	signs = true,
+	signs = {
+		text = {
+			[vim.diagnostic.severity.ERROR] = signs.Error,
+			[vim.diagnostic.severity.WARN] = signs.Warn,
+			[vim.diagnostic.severity.INFO] = signs.Info,
+			[vim.diagnostic.severity.HINT] = signs.Hint,
+		},
+	},
 	underline = true,
 	virtual_text = false,
 	virtual_lines = false,
@@ -9,11 +19,4 @@ vim.diagnostic.config({
 		border = "rounded",
 		focusable = true,
 	},
-})
-
-vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-	group = vim.api.nvim_create_augroup("float_diagnostic", { clear = true }),
-	callback = function()
-		vim.diagnostic.open_float(nil, { focus = false })
-	end,
 })

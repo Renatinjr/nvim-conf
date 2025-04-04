@@ -264,7 +264,7 @@ local GitBranch = {
 	},
 	{
 		provider = right_slant,
-		hl = { fg = "normal_bg3", bg = "normal_bg4" },
+		hl = { fg = "normal_bg3", bg = "normal_bg2" },
 	},
 }
 
@@ -318,7 +318,7 @@ local LSPActive = {
 	update = { "LspAttach", "LspDetach" },
 	{
 		provider = left_slant,
-		hl = { fg = "normal_bg3", bg = "normal_bg4" },
+		hl = { fg = "normal_bg3", bg = "normal_bg2" },
 	},
 
 	{
@@ -333,12 +333,12 @@ local LSPActive = {
 	},
 	{
 		provider = right_slant,
-		hl = { fg = "normal_bg3", bg = "normal_bg4" },
+		hl = { fg = "normal_bg3", bg = "normal_bg2" },
 	},
 }
 
 local SearchCount = {
-	hl = { fg = "normal_fg4", bg = "normal_bg4" },
+	hl = { fg = "normal_fg1", bg = "normal_bg2" },
 	provider = function()
 		if vim.v.hlsearch == 0 then
 			return ""
@@ -379,15 +379,15 @@ local DiagnosticColors = {
 	"diagnostic_error",
 	"diagnostic_warn",
 	"diagnostic_info",
-	"diagnostic_hint",
+	"#ffe663",
 }
 
 local function GetDiagnosticHighlight(level)
-	return { fg = DiagnosticColors[level], bg = "normal_bg4" }
+	return { fg = DiagnosticColors[level], bg = "normal_bg2" }
 end
 
 local Diagnostic = {
-	hl = { fg = "normal_fg4", bg = "normal_bg4" },
+	hl = { fg = "normal_fg1", bg = "normal_bg2" },
 	update = { "DiagnosticChanged" },
 
 	{
@@ -429,7 +429,7 @@ local FileEncoding = {
 	hl = { fg = "normal_fg3", bg = "normal_bg3" },
 	{
 		provider = left_slant,
-		hl = { fg = "normal_bg3", bg = "normal_bg4" },
+		hl = { fg = "normal_bg3", bg = "normal_bg2" },
 	},
 	{
 		provider = function()
@@ -570,13 +570,18 @@ local Progress = {
 }
 
 local StatusLine = {
+	condition = function()
+		local ft = vim.bo.filetype
+		-- Return false for dapui windows to hide the statusline
+		return not (ft:match("^dapui") or ft == "dap-repl")
+	end,
 	Mode,
 	-- FileName,
 	GitBranch,
 	GitDiff,
-	{ provider = "%=", hl = { fg = "normal_fg2", bg = "normal_bg4" } },
+	{ provider = "%=", hl = { fg = "normal_fg1", bg = "normal_bg2" } },
 	LSPActive,
-	{ provider = "%=", hl = { fg = "normal_fg2", bg = "normal_bg4" } },
+	{ provider = "%=", hl = { fg = "normal_fg1", bg = "normal_bg2" } },
 	SearchCount,
 	Diagnostic,
 	FileEncoding,
