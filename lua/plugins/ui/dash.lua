@@ -30,11 +30,12 @@ return {
 
 		-- Buttons
 		dashboard.section.buttons.val = {
-			dashboard.button("e", "  New", "<cmd>ene <CR>"),
-			dashboard.button("SPC f f", "󰈞 Explore"),
-			dashboard.button("SPC f r", "󰑓 Recents"),
-			dashboard.button("SPC f s", "󰊄 Grep"),
-			dashboard.button("p", " Plugins", "<cmd>Lazy<CR>"),
+			dashboard.button("e", "❐  New File", "<cmd>ene <CR>"),
+			dashboard.button("SPC f f", "🔍 Explore"),
+			dashboard.button("SPC f r", "󰑓  Recents"),
+			dashboard.button("SPC f s", "󰑑  Grep Files"),
+			dashboard.button("SPC f g", "  Git Files"),
+			dashboard.button("p", "  Plugins", "<cmd>Lazy<CR>"),
 		}
 
 		-- Footer (random tip or quote)

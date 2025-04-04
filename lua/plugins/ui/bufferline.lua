@@ -55,7 +55,7 @@ return {
 					bg = colors.sumiInk1,
 				},
 				close_button = {
-					fg = "#c4746e",
+					fg = colors.fujiGray,
 					bg = colors.sumiInk1,
 				},
 				close_button_visible = {

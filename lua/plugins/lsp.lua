@@ -5,30 +5,10 @@ return {
 		vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
 		vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 		vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist)
-		vim.keymap.set(
-			"n",
-			"gd",
-			"<cmd>FzfLua lsp_definitions     jump1=true ignore_current_line=true<cr>",
-			{ desc = "Goto Definition" }
-		)
-		vim.keymap.set(
-			"n",
-			"gr",
-			"<cmd>FzfLua lsp_references      jump1=true ignore_current_line=true<cr>",
-			{ desc = "References", nowait = true }
-		)
-		vim.keymap.set(
-			"n",
-			"gI",
-			"<cmd>FzfLua lsp_implementations jump1=true ignore_current_line=true<cr>",
-			{ desc = "Goto Implementation" }
-		)
-		vim.keymap.set(
-			"n",
-			"gy",
-			"<cmd>FzfLua lsp_typedefs        jump1=true ignore_current_line=true<cr>",
-			{ desc = "Goto T[y]pe Definition" }
-		)
+		vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", { noremap = true, silent = true })
+		vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", { noremap = true, silent = true })
+		vim.keymap.set("n", "wa", "<cmd>lua vim.lsp.buf.add_workspace_folder<CR>", { noremap = true, silent = true })
+		vim.keymap.set("n", "wr", "<cmd>lua vim.lsp.buf.remove_workspace_folder<CR>", { noremap = true, silent = true })
 
 		local lspconfig = require("lspconfig")
 		local util = require("lspconfig/util")
