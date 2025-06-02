@@ -1,29 +1,61 @@
 return {
 	"b0o/incline.nvim",
 	event = "BufReadPre",
-	priority = 1200,
 	config = function()
-		local colors = require("kanagawa.colors").setup({ theme = "dragon" }).palette
-		require("incline").setup({
-			highlight = {
-				groups = {
-					InclineNormal = { guibg = colors.sumiInk4, guifg = colors.base02 },
-					InclineNormalNC = { guifg = colors.sumiInk0, guibg = colors.base02 },
+		local incline = require("incline")
+		local theme = require("config.theme")
+		local edge_bg = theme.current_theme.bg
+		incline.setup({
+			window = {
+				padding = 0,
+				margin = { horizontal = 0, vertical = 1 },
+				zindex = 50,
+				winhighlight = {
+					Normal = "InclineNormal",
+					FloatBorder = "InclineBorder",
 				},
-			},
-			window = { margin = { vertical = 0, horizontal = 1 } },
-			hide = {
-				cursorline = true,
 			},
 			render = function(props)
 				local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(props.buf), ":t")
-				if vim.bo[props.buf].modified then
-					filename = "[+] " .. filename
-				end
+				local modified = vim.api.nvim_buf_get_option(props.buf, "modified") and " ●" or ""
+				local filetype_icon, filetype_color = require("nvim-web-devicons").get_icon_color(filename)
 
-				local icon, color = require("nvim-web-devicons").get_icon_color(filename)
-				return { { icon, guifg = color }, { " " }, { filename } }
+				local bg_color = props.focused and theme.current_theme.incline.focused.one
+					or theme.current_theme.incline.focused.two
+
+				local buffer = {
+					{ filetype_icon, guifg = filetype_color, guibg = bg_color, gui = "bold" }, -- Added bold and larger font
+					{ " ", guibg = bg_color }, -- Space with background color
+					{
+						filename,
+						gui = props.focused and "bold" or "none",
+						guifg = theme.current_theme.incline.file_name.guifg,
+						guibg = bg_color,
+					},
+					{ modified, guifg = theme.current_theme.incline.modified.guifg, guibg = bg_color },
+				}
+
+				return {
+					{ "", guifg = edge_bg, guibg = bg_color },
+					buffer,
+					{ "", guifg = edge_bg, guibg = bg_color },
+				}
 			end,
 		})
+
+		vim.api.nvim_set_hl(
+			0,
+			"InclineNormal",
+			{ fg = theme.current_theme.incline.normal.fg, bg = theme.current_theme.incline.normal.bg }
+		)
+		vim.api.nvim_set_hl(0, "InclineBorder", { fg = edge_bg, bg = edge_bg })
+		vim.api.nvim_set_hl(
+			0,
+			"InclineNormalNC",
+			{ fg = theme.current_theme.incline.normal_nc.fg, bg = theme.current_theme.incline.normal_nc.bg }
+		)
 	end,
+	dependencies = {
+		"nvim-tree/nvim-web-devicons",
+	},
 }

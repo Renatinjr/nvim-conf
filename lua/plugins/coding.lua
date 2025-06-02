@@ -9,7 +9,8 @@ local autopairs = load_plugin("autopairs")
 local rustace = load_plugin("rustace")
 local dap = load_plugin("dap")
 local dapui = load_plugin("dapui")
-local t_tools = load_plugin("typescript-tools")
+local ts_tools = load_plugin("typescript-tools")
+local tmux_navigator = load_plugin("vim-tmux-navigator")
 
 return {
 	fzf,
@@ -19,5 +20,6 @@ return {
 	rustace,
 	dapui,
 	dap,
-	t_tools,
+	ts_tools,
+	tmux_navigator,
 }

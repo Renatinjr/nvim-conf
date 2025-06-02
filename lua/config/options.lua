@@ -1,5 +1,11 @@
+vim.opt.signcolumn = "auto:2"
+vim.opt.tabstop = 2
+vim.opt.cursorline = true
 vim.opt.termguicolors = true
+vim.opt.signcolumn = "auto:1"
+
 local signs = { Error = "󰅙 ", Warn = " ", Hint = "💡", Info = " " }
+local theme = require("config.theme")
 
 vim.diagnostic.config({
 	signs = {
@@ -19,4 +25,11 @@ vim.diagnostic.config({
 		border = "rounded",
 		focusable = true,
 	},
+})
+
+vim.api.nvim_set_hl(0, "LspInlayHint", {
+	bg = theme.current_theme.inlay_hint_bg,
+	fg = theme.current_theme.inlay_hint_fg,
+	italic = true,
+	underline = false,
 })

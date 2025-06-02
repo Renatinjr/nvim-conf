@@ -46,6 +46,9 @@ return {
 		{ "<leader>re", "<cmd>lua require('fzf-lua').registers()<CR>", map_opts },
 	},
 	config = function()
+		local theme = require("config.theme")
+		local hl = theme.current_theme.fzf.setup_colors()
+
 		require("fzf-lua").setup({
 			winopts = {
 				height = 0.85,
@@ -73,33 +76,11 @@ return {
 				["header"] = { "fg", "FzfLuaHeader" },
 			},
 			previewers = {
-				-- bat = {
-				-- 	theme = "kanagawa-tmTheme", -- Using our installed theme
-				-- },
+				bat = {
+					theme = "kanagawa-tmTheme",
+				},
 			},
-			-- Kanagawa-specific highlights
-			hl = {
-				normal = "Normal",
-				border = "Comment",
-				help_normal = "Normal",
-				help_border = "Comment",
-				-- Match Kanagawa's color groups
-				preview_title = { fg = "#957FB8", bold = true }, -- Kanagawa's purple
-				prompt = { fg = "#7E9CD8", bold = true }, -- Kanagawa's blue
-				pointer = { fg = "#E46876", bold = true }, -- Kanagawa's red
-				spinner = { fg = "#98BB6C", bold = true }, -- Kanagawa's green
-			},
+			hl = hl,
 		})
-
-		-- Add custom highlights that blend with Kanagawa
-		vim.api.nvim_set_hl(0, "FzfLuaNormal", { bg = "#1F1F28", fg = "#DCD7BA" })
-		vim.api.nvim_set_hl(0, "FzfLuaBorder", { fg = "#54546D" })
-		vim.api.nvim_set_hl(0, "FzfLuaCursorLine", { bg = "#2A2A37", fg = "#DCD7BA" })
-		vim.api.nvim_set_hl(0, "FzfLuaTitle", { fg = "#7E9CD8", bold = true })
-		vim.api.nvim_set_hl(0, "FzfLuaPrompt", { fg = "#7FB4CA", bold = true })
-		vim.api.nvim_set_hl(0, "FzfLuaPointer", { fg = "#E46876", bold = true })
-		vim.api.nvim_set_hl(0, "FzfLuaMarker", { fg = "#98BB6C" })
-		vim.api.nvim_set_hl(0, "FzfLuaSpinner", { fg = "#FFA066", bold = true })
-		vim.api.nvim_set_hl(0, "FzfLuaHeader", { fg = "#727169" })
 	end,
 }

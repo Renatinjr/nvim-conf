@@ -5,11 +5,10 @@ return {
 		local alpha = require("alpha")
 		local dashboard = require("alpha.themes.dashboard")
 
-		-- Set Kanagawa colors
-		local colors = require("kanagawa.colors").setup()
-		local heading = colors.palette.oldWhite
-		local button = colors.palette.oniViolet
-		local shortcut = colors.palette.crystalBlue
+		local theme = require("config.theme")
+		local heading = theme.current_theme.alpha.heading
+		local button = theme.current_theme.alpha.button
+		local shortcut = theme.current_theme.alpha.shortcut
 
 		-- Header (ASCII art or text)
 		dashboard.section.header.val = {
@@ -28,7 +27,6 @@ return {
 			[[ ██      ████    ████      ██]],
 		}
 
-		-- Buttons
 		dashboard.section.buttons.val = {
 			dashboard.button("e", "❐  New File", "<cmd>ene <CR>"),
 			dashboard.button("SPC f f", "🔍 Explore"),
@@ -38,18 +36,15 @@ return {
 			dashboard.button("p", "  Plugins", "<cmd>Lazy<CR>"),
 		}
 
-		-- Footer (random tip or quote)
-		-- Apply Kanagawa colors
 		dashboard.section.header.opts.hl = "AlphaHeader"
 		dashboard.section.buttons.opts.hl = "AlphaButton"
 		dashboard.section.footer.opts.hl = "AlphaFooter"
 
-		-- Highlight groups
 		vim.api.nvim_set_hl(0, "AlphaHeader", { fg = heading, bg = bg })
 		vim.api.nvim_set_hl(0, "AlphaButton", { fg = button, bg = bg })
 		vim.api.nvim_set_hl(0, "AlphaFooter", { fg = shortcut, bg = bg })
 
-		-- Setup Alpha
+		dashboard.opts.opts.noautocmd = true
 		dashboard.section.footer.val = "-NvLeet-"
 		alpha.setup(dashboard.opts)
 		vim.cmd([[autocmd FileType alpha setlocal nofoldenable]])

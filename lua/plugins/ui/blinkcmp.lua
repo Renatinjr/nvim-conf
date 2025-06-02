@@ -102,7 +102,7 @@ return {
 			default = { "lsp", "path", "snippets", "buffer" },
 			providers = {
 				lsp = {
-					min_keyword_length = 2, -- Número de caracteres para acionar o provedor
+					min_keyword_length = 0, -- Número de caracteres para acionar o provedor
 					score_offset = 0, -- Aumentar/penalizar a pontuação dos itens
 				},
 				path = {

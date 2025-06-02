@@ -75,7 +75,7 @@ return {
 				tsserver_max_memory = 4096, -- MB
 				complete_function_calls = true, -- Complete function calls with parameters
 				include_completions_with_insert_text = true,
-				code_lens = "implementations_only", -- Reduced noise
+				-- code_lens = "implementations_only", -- Reduced noise
 				expose_as_code_action = {
 					"fix_all",
 					"add_missing_imports",

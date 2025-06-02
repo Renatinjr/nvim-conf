@@ -13,5 +13,6 @@ return {
 		"typescript-language-server",
 		"tailwindcss-language-server",
 		"vtsl",
+		"elixir-ls",
 	},
 }

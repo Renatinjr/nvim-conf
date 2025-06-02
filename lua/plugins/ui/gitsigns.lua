@@ -4,17 +4,20 @@ return {
 		"nvim-lua/planary.nvim",
 	},
 	config = function()
-		vim.opt.signcolumn = "yes"
 		require("gitsigns").setup({
 			signs = {
-				add = { text = "🞧" },
-				change = { text = "~" },
-				delete = { text = "-" },
+				add = { text = "▎" },
+				change = { text = "▎" },
+				delete = { text = "▎" },
 				topdelete = { text = "‾" },
 				changedelete = { text = "~" },
 				untracked = { text = "┆" },
 			},
 
+			signcolumn = true,
+			numhl = false, -- Highlight line numbers instead
+			linehl = false,
+			_signs_staged_enable = true,
 			on_attach = function(bufnr)
 				local gs = package.loaded.gitsigns
 

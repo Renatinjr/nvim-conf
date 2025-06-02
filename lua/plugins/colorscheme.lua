@@ -18,12 +18,12 @@ return {
 					theme = {
 						all = {
 							ui = {
-								bg_gutter = "#1F1F29",
+								-- bg_gutter = "#1F1F29",
 							},
 						},
 					},
 					palette = {
-						-- surimiOrange = "#C8C093",
+						surimiOrange = "#C8C093",
 					},
 					-- theme = { wave = {}, lotus = {}, dragon = {}, all = {} },
 				},
@@ -43,38 +43,23 @@ return {
 						PmenuSbar = { bg = theme.ui.bg_m1 },
 						PmenuThumb = { bg = theme.ui.bg_p2 },
 						TelescopeTitle = { fg = theme.ui.special, bold = true },
-						TelescopePromptNormal = { bg = theme.ui.bg_p1 },
-						TelescopePromptBorder = { fg = theme.ui.bg_p1, bg = theme.ui.bg_p1 },
-						TelescopeResultsNormal = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m1 },
-						TelescopeResultsBorder = { fg = theme.ui.bg_m1, bg = theme.ui.bg_m1 },
-						TelescopePreviewNormal = { bg = theme.ui.bg_dim },
-						TelescopePreviewBorder = { bg = theme.ui.bg_dim, fg = theme.ui.bg_dim },
 						NormalFloat = { bg = "none" },
 						FloatBorder = { bg = "none" },
 						FloatTitle = { bg = "none" },
 						NormalDark = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m3 },
-						LazyNormal = { bg = theme.ui.bg_m3, fg = theme.ui.fg_dim },
-						MasonNormal = { bg = theme.ui.bg_m3, fg = theme.ui.fg_dim },
 						NvimTreeFolderArrowClosed = { fg = "#64748b" },
 						NvimTreeFolderIcon = { fg = "#64748b" },
 						NvimTreeFolderArrowOpen = { fg = "#83a3aa" },
 						CursorLine = { bg = colors.bg_light0 },
-						-- BufferLineIndicatorSelected = { fg = colors.warning, bg = colors.error },
-						-- BufferLineFill = { fg = colors.springGreen, bg = "#1F1F28" },
-						-- BufferlineCloseButtonSelected = { fg = "#c4746e", bold = true },
-						-- BufferlineTab = { fg = colors.sumiInk4, bg = colors.sumiInk4 },
-						-- BufferlineTabSelected = { fg = colors.sumiInk4, bg = colors.sumiInk4 },
-						-- BufferlineTabSeparator = { fg = "#727169", bg = "#727169" },
 					}
 				end,
-				theme = "dragon", -- Load "wave" theme when 'background' option is not set
+				theme = "wave", -- Load "wave" theme when 'background' option is not set
 				background = { -- map the value of 'background' option to a theme
-					dark = "dragon", -- try "dragon" !
+					dark = "wave", -- try "dragon" !
 					light = "lotus",
 				},
 			})
-
-			vim.cmd("colorscheme kanagawa")
+			-- vim.cmd("colorscheme kanagawa")
 		end,
 	},
 
@@ -85,7 +70,7 @@ return {
 		opts = {},
 		config = function()
 			require("kanagawa-paper").setup({
-				undercurl = true,
+				undercurl = false,
 				transparent = true,
 				gutter = true,
 				dimInactive = false, -- disabled when transparent
@@ -95,7 +80,7 @@ return {
 				keywordStyle = { italic = false, bold = false },
 				statementStyle = { italic = false, bold = false },
 				typeStyle = { italic = false },
-				colors = { theme = {}, palette = {} }, -- override default palette and theme colors
+				colors = { theme = {}, palette = { sumiInk0 = "#1F1F28" } }, -- override default palette and theme colors
 				overrides = function(colors) -- override highlight groups
 					local theme = colors.theme
 					local makeDiagnosticColor = function(color)
@@ -112,29 +97,18 @@ return {
 						PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
 						PmenuSbar = { bg = theme.ui.bg_m1 },
 						PmenuThumb = { bg = theme.ui.bg_p2 },
-						TelescopeTitle = { fg = theme.ui.special, bold = true },
-						TelescopePromptNormal = { bg = theme.ui.bg_p1 },
-						TelescopePromptBorder = { fg = theme.ui.bg_p1, bg = theme.ui.bg_p1 },
-						TelescopeResultsNormal = { fg = theme.ui.fg_m1, bg = theme.ui.bg_dim },
-						TelescopeResultsBorder = { fg = theme.ui.bg_m1, bg = theme.ui.bg_m1 },
-						TelescopePreviewNormal = { bg = theme.ui.bg_dim },
-						TelescopePreviewBorder = { bg = theme.ui.bg_dim, fg = theme.ui.bg_dim },
 						NormalFloat = { bg = "none" },
 						FloatBorder = { bg = "none" },
 						FloatTitle = { bg = "none" },
 						NormalDark = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m3 },
-						LazyNormal = { bg = theme.ui.bg_m3, fg = theme.ui.fg_dim },
-						MasonNormal = { bg = theme.ui.bg_m3, fg = theme.ui.fg_dim },
 						NvimTreeFolderArrowClosed = { fg = "#64748b" },
 						NvimTreeFolderIcon = { fg = "#64748b" },
 						NvimTreeFolderArrowOpen = { fg = "#83a3aa" },
 						CursorLine = { bg = colors.bg_light0 },
-						BufferLineIndicatorSelected = { fg = colors.warning, bg = colors.error },
-						BufferLineFill = { fg = colors.springGreen, bg = colors.springGreen },
 					}
 				end,
 			})
-			-- vim.cmd("colorscheme kanagawa-paper-ink")
+			-- vim.cmd("colorscheme kanagawa-paper")
 		end,
 	},
 	{
@@ -200,6 +174,75 @@ return {
 			})
 
 			-- vim.cmd.colorscheme("catppuccin")
+		end,
+	},
+	{
+		"rose-pine/neovim",
+		name = "rose-pine",
+		lazy = false, -- Load during startup
+		priority = 1000, -- Load this before other plugins
+		config = function()
+			require("rose-pine").setup({
+				--- @usage 'auto' | 'main' | 'moon' | 'dawn'
+				variant = "auto",
+				--- @usage 'main' | 'moon' | 'dawn'
+				dark_variant = "main",
+				bold_vert_split = false,
+				dim_nc_background = false,
+				disable_background = false,
+				disable_float_background = false,
+				disable_italics = false,
+
+				--- @usage string hex value or named color from rosepinetheme.com colors
+				groups = {
+					background = "base",
+					background_nc = "_experimental_nc",
+					panel = "surface",
+					panel_nc = "base",
+					border = "highlight_med",
+					comment = "muted",
+					link = "iris",
+					punctuation = "subtle",
+					error = "love",
+					hint = "iris",
+					info = "foam",
+					warn = "gold",
+
+					headings = {
+						h1 = "iris",
+						h2 = "foam",
+						h3 = "rose",
+						h4 = "gold",
+						h5 = "pine",
+						h6 = "foam",
+					},
+				},
+				palette = {
+					-- Override the builtin palette per variant
+					main = {
+						-- base = '#18191a',
+						-- overlay = '#363738',
+						text = "#DCD7BA",
+					},
+				},
+				highlight_groups = {
+					NvimTreeFolderArrowOpen = { fg = "#83a3aa" },
+					NormalFloat = { bg = "none" },
+					FloatBorder = { fg = "none" },
+					Comment = { fg = "muted", italic = true },
+					LineNr = { fg = "muted" },
+					CursorLineNr = { fg = "rose" },
+					["@variable"] = { fg = "text" },
+					["@function"] = { fg = "iris", italic = true },
+					["@keyword"] = { fg = "pine", italic = true },
+					["@string"] = { fg = "gold" },
+					["@property"] = { fg = "foam" },
+					StatusLine = { fg = "love", bg = "surface" },
+					StatusLineNC = { fg = "subtle", bg = "surface" },
+				},
+			})
+			vim.cmd("colorscheme rose-pine-main")
+			vim.opt.background = "dark" -- or "light" if you prefer rose-pine-dawn
 		end,
 	},
 }

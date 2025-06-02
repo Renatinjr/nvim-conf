@@ -38,3 +38,22 @@ map(
 	"<cmd>lua require'utils.utils'.resize(true,   5)<CR>",
 	{ silent = true, desc = "vertical split increase" }
 )
+
+vim.keymap.set("n", "<leader>ih", function()
+	local clients = vim.lsp.get_clients()
+	for _, client in ipairs(clients) do
+		if client.supports_method("textDocument/inlayHint") then
+			vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+			return
+		end
+	end
+	vim.notify("No LSP client with inlay hint support found", vim.log.levels.WARN)
+end, { desc = "Toggle inlay hints" })
+
+function _G.memory_usage()
+	local mem = collectgarbage("count") / 1024
+	local hints = vim.lsp.inlay_hint.is_enabled() and "ON" or "OFF"
+	print(string.format("Memory: %.2fMB | Hints: %s", mem, hints))
+end
+
+vim.keymap.set("n", "<leader>mu", "<cmd>lua memory_usage()<CR>")

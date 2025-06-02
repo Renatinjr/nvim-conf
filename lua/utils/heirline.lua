@@ -7,6 +7,7 @@ local spawn = require("commons.spawn")
 
 local constants = require("utils.constants")
 local conditions = require("utils.heirline-conditions")
+local heir_conditions = require("heirline.conditions")
 
 local black = "#000000"
 local white = "#ffffff"
@@ -73,23 +74,23 @@ local ModeNames = {
 }
 
 local ModeHighlights = {
-	NORMAL = { fg = "normal_fg1", bg = "normal_bg1" },
-	["O-PENDING"] = { fg = "normal_fg1", bg = "normal_bg1" },
-	INSERT = { fg = "insert_fg", bg = "insert_bg" },
-	VISUAL = { fg = "visual_fg", bg = "visual_bg" },
-	["V-LINE"] = { fg = "visual_fg", bg = "visual_bg" },
-	["V-BLOCK"] = { fg = "visual_fg", bg = "visual_bg" },
-	SELECT = { fg = "visual_fg", bg = "visual_bg" },
-	["S-LINE"] = { fg = "visual_fg", bg = "visual_bg" },
-	["S-BLOCK"] = { fg = "visual_fg", bg = "visual_bg" },
-	REPLACE = { fg = "replace_fg", bg = "replace_bg" },
-	MORE = { fg = "replace_fg", bg = "replace_bg" },
-	["V-REPLACE"] = { fg = "replace_fg", bg = "replace_bg" },
-	COMMAND = { fg = "command_fg", bg = "command_bg" },
-	EX = { fg = "command_fg", bg = "command_bg" },
-	CONFIRM = { fg = "command_fg", bg = "command_bg" },
-	SHELL = { fg = "command_fg", bg = "command_bg" },
-	TERMINAL = { fg = "command_fg", bg = "command_bg" },
+	NORMAL = { fg = "normal_fg1", bg = "normal_bg1", bold = true },
+	["O-PENDING"] = { fg = "normal_fg1", bg = "normal_bg1", bold = true },
+	INSERT = { fg = "insert_fg", bg = "insert_bg", bold = true },
+	VISUAL = { fg = "visual_fg", bg = "visual_bg", bold = true },
+	["V-LINE"] = { fg = "visual_fg", bg = "visual_bg", bold = true },
+	["V-BLOCK"] = { fg = "visual_fg", bg = "visual_bg", bold = true },
+	SELECT = { fg = "visual_fg", bg = "visual_bg", bold = true },
+	["S-LINE"] = { fg = "visual_fg", bg = "visual_bg", bold = true },
+	["S-BLOCK"] = { fg = "visual_fg", bg = "visual_bg", bold = true },
+	REPLACE = { fg = "replace_fg", bg = "replace_bg", bold = true },
+	MORE = { fg = "replace_fg", bg = "replace_bg", bold = true },
+	["V-REPLACE"] = { fg = "replace_fg", bg = "replace_bg", bold = true },
+	COMMAND = { fg = "command_fg", bg = "command_bg", bold = true },
+	EX = { fg = "command_fg", bg = "command_bg", bold = true },
+	CONFIRM = { fg = "command_fg", bg = "command_bg", bold = true },
+	SHELL = { fg = "command_fg", bg = "command_bg", bold = true },
+	TERMINAL = { fg = "command_fg", bg = "command_bg", bold = true },
 }
 
 local function GetModeName(mode)
@@ -136,19 +137,21 @@ local Mode = {
 		provider = function(self)
 			return " " .. GetOsIcon() .. " "
 		end,
+		{ bold = true },
 	},
 	-- mode
 	{
 		provider = function(self)
 			return GetModeName(self.mode) .. " "
 		end,
+		{ bold = true },
 	},
 	-- separator
 	{
 		provider = right_slant,
 		hl = function(self)
 			local mode_hl = GetModeHighlight(self.mode)
-			return { fg = mode_hl.bg, bg = "normal_bg2" }
+			return { fg = mode_hl.bg, bg = "normal_bg3" }
 		end,
 	},
 }
@@ -327,7 +330,7 @@ local LSPActive = {
 			for _, server in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
 				table.insert(names, server.name)
 			end
-			return "  " .. table.concat(names, " ") .. " "
+			return " 󰘦 " .. table.concat(names, " ") .. " "
 		end,
 		hl = { fg = "normal_fg3", bg = "normal_bg3", bold = true },
 	},
@@ -570,26 +573,31 @@ local Progress = {
 }
 
 local StatusLine = {
-	condition = function()
-		local ft = vim.bo.filetype
-		-- Return false for dapui windows to hide the statusline
-		return not (ft:match("^dapui") or ft == "dap-repl")
-	end,
-	Mode,
-	-- FileName,
-	GitBranch,
-	GitDiff,
-	{ provider = "%=", hl = { fg = "normal_fg1", bg = "normal_bg2" } },
-	LSPActive,
-	{ provider = "%=", hl = { fg = "normal_fg1", bg = "normal_bg2" } },
-	SearchCount,
-	Diagnostic,
-	FileEncoding,
-	FileFormat,
-	FileType,
-	Location,
-	CursorHex,
-	Progress,
+	fallthrough = false,
+	{
+		condition = function()
+			local ft = vim.bo.filetype or ""
+			return ft:match("^dapui") or ft == "dap-repl"
+		end,
+		FileEncoding,
+	},
+	{
+		Mode,
+		-- FileName,
+		GitBranch,
+		GitDiff,
+		{ provider = "%=", hl = { fg = "normal_fg1", bg = "normal_bg2" } },
+		LSPActive,
+		{ provider = "%=", hl = { fg = "normal_fg1", bg = "normal_bg2" } },
+		SearchCount,
+		Diagnostic,
+		FileEncoding,
+		FileFormat,
+		FileType,
+		Location,
+		CursorHex,
+		Progress,
+	},
 }
 
 -- Get RGB color code from either lualine/airline theme, or fallback to highlighting group, or fallback to default color.

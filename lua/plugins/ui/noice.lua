@@ -63,5 +63,11 @@ return {
 		opts = {
 			timeout = 5000,
 		},
+		config = function()
+			local theme = require("config.theme")
+			require("notify").setup({
+				background_colour = theme.current_theme.bg,
+			})
+		end,
 	},
 }

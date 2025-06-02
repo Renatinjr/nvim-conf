@@ -1,6 +1,7 @@
 return {
 	"neovim/nvim-lspconfig",
 	lazy = false,
+	opts = {},
 	config = function()
 		vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
 		vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
@@ -48,19 +49,38 @@ return {
 			},
 		})
 		lspconfig.gopls.setup({
-			on_attach = on_attach,
 			capabilities = capabilities,
-			cmd = { "gopls" },
-			filetypes = { "go", "gomod", "gowork", "gotmpl" },
-			root_dir = util.root_pattern("go.work", "go.mod", ".git"),
 			settings = {
 				gopls = {
-					completeUnimported = true,
-					usePlaceholders = true,
 					analyses = {
 						unusedparams = true,
+						shadow = true,
 					},
+					staticcheck = true,
+					gofumpt = true,
+					hints = {
+						assignVariableTypes = true,
+						compositeLiteralFields = true,
+						constantValues = true,
+						functionTypeParameters = true,
+						parameterNames = true,
+						rangeVariableTypes = true,
+					},
+					-- Add more settings as needed
 				},
+			},
+			flags = {
+				debounce_text_changes = 150,
+			},
+		})
+
+		lspconfig.elixirls.setup({
+			cmd = { "/home/renatojr/.local/share/nvim/mason/packages/elixir-ls/language_server.sh" },
+			settings = {
+				dialyzerEnabled = true,
+				fetchDeps = false,
+				enableTestLenses = false,
+				suggestSpecs = false,
 			},
 		})
 	end,

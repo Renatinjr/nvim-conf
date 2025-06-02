@@ -1,40 +1,37 @@
 return {
 	"nvim-tree/nvim-tree.lua",
-	requires = {
-		"nvim-tree/nvim-web-devicons", -- optional, for file icons
+	dependencies = {
+		"nvim-tree/nvim-web-devicons", -- for file icons
 	},
 	config = function()
 		local HEIGHT_RATIO = 0.8
 		local WIDTH_RATIO = 0.5
 		local map = vim.keymap.set
-		map("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "toggle nvimtree" })
+
+		-- Better keybindings with descriptive comments
+		map("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle NvimTree" })
+		map("n", "<leader>nf", "<cmd>NvimTreeFindFile<CR>", { desc = "Find current file in NvimTree" })
+		map("n", "<leader>nr", "<cmd>NvimTreeRefresh<CR>", { desc = "Refresh NvimTree" })
+
 		require("nvim-tree").setup({
-			on_attach = "default",
-			hijack_cursor = false,
-			auto_reload_on_write = true,
-			disable_netrw = false,
-			hijack_netrw = true,
-			hijack_unnamed_buffer_when_opening = false,
-			root_dirs = {},
-			prefer_startup_root = false,
-			sync_root_with_cwd = false,
-			reload_on_bufenter = false,
-			respect_buf_cwd = false,
-			select_prompts = false,
-			sort = {
-				sorter = "name",
-				folders_first = true,
-				files_first = false,
+			-- Better project navigation with smart root detection
+			sync_root_with_cwd = true,
+			respect_buf_cwd = true,
+			update_focused_file = {
+				enable = true,
+				update_root = true,
 			},
+
+			-- Improve file sorting and organization
+			sort = {
+				sorter = "case_sensitive",
+				folders_first = true,
+			},
+
 			view = {
-				centralize_selection = false,
+				centralize_selection = true,
 				cursorline = true,
-				debounce_delay = 15,
 				side = "left",
-				preserve_window_proportions = false,
-				number = false,
-				relativenumber = false,
-				signcolumn = "yes",
 				width = 30,
 				float = {
 					enable = true,
@@ -58,20 +55,14 @@ return {
 					end,
 				},
 			},
+
 			renderer = {
-				add_trailing = false,
-				group_empty = false,
-				full_name = false,
-				root_folder_label = ":~:s?$??",
-				indent_width = 2,
-				special_files = { "Cargo.toml", "Makefile", "README.md", "readme.md" },
-				symlink_destination = true,
+				add_trailing = true, -- Add trailing slash to folders
+				group_empty = true, -- Group empty directories for cleaner view
 				highlight_git = "name",
-				highlight_diagnostics = "none",
-				highlight_opened_files = "none",
+				highlight_opened_files = "icon",
 				highlight_modified = "all",
-				highlight_bookmarks = "none",
-				highlight_clipboard = "name",
+				special_files = { "Cargo.toml", "Makefile", "README.md", "readme.md", "package.json" },
 				indent_markers = {
 					enable = true,
 					icons = {
@@ -92,10 +83,8 @@ return {
 							color = true,
 						},
 					},
-					git_placement = "after",
+					git_placement = "before",
 					modified_placement = "after",
-					diagnostics_placement = "signcolumn",
-					bookmarks_placement = "signcolumn",
 					padding = " ",
 					symlink_arrow = " ➛ ",
 					show = {
@@ -105,7 +94,6 @@ return {
 						git = true,
 						modified = true,
 						diagnostics = true,
-						bookmarks = true,
 					},
 					glyphs = {
 						default = "󰈮",
@@ -121,50 +109,39 @@ return {
 							symlink_open = "",
 						},
 						git = {
-							unstaged = "", -- 
-							staged = "󰗠",
-							unmerged = "",
+							unstaged = "M",
+							staged = "S",
+							unmerged = "U",
 							renamed = "R",
-							untracked = "U",
-							deleted = "",
-							ignored = " ",
+							untracked = "?",
+							deleted = "D",
+							ignored = "",
 						},
 					},
 				},
 			},
-			hijack_directories = {
-				enable = true,
-				auto_open = true,
+
+			-- Enhance file filters for development workflows
+			filters = {
+				dotfiles = false, -- Show dotfiles by default
+				git_ignored = false,
+				custom = { "^.git$", "^node_modules$", "^.cache$", "^dist$" }, -- Common dirs to hide
+				exclude = { ".gitignore", ".env.example" }, -- Files to never hide
 			},
-			update_focused_file = {
-				enable = true,
-				update_root = {
-					enable = false,
-					ignore_list = {},
-				},
-				exclude = false,
-			},
-			system_open = {
-				cmd = "",
-				args = {},
-			},
+
+			-- Improve Git integration
 			git = {
 				enable = true,
 				show_on_dirs = true,
 				show_on_open_dirs = false,
-				disable_for_dirs = {},
-				timeout = 400,
-				cygwin_support = false,
+				timeout = 300,
 			},
+
+			-- Enable diagnostic integration (LSP)
 			diagnostics = {
 				enable = true,
 				show_on_dirs = false,
-				show_on_open_dirs = true,
 				debounce_delay = 50,
-				severity = {
-					min = vim.diagnostic.severity.HINT,
-					max = vim.diagnostic.severity.ERROR,
-				},
 				icons = {
 					hint = "💡",
 					info = " ",
@@ -172,60 +149,37 @@ return {
 					error = "󰅙 ",
 				},
 			},
+
+			-- Track modified files
 			modified = {
-				enable = false,
-				show_on_dirs = false,
-				show_on_open_dirs = true,
-			},
-			filters = {
 				enable = true,
-				git_ignored = false,
-				dotfiles = false,
-				git_clean = false,
-				no_buffer = false,
-				no_bookmark = false,
-				custom = {},
-				exclude = {},
+				show_on_dirs = true,
 			},
-			live_filter = {
-				prefix = "[FILTER]: ",
-				always_show_folders = true,
-			},
-			filesystem_watchers = {
-				enable = true,
-				debounce_delay = 50,
-				ignore_dirs = {},
-			},
+
+			-- Improve actions when interacting with files
 			actions = {
 				use_system_clipboard = true,
 				change_dir = {
 					enable = true,
 					global = false,
-					restrict_above_cwd = false,
-				},
-				expand_all = {
-					max_folder_discovery = 300,
-					exclude = {},
-				},
-				file_popup = {
-					open_win_config = {
-						col = 1,
-						row = 1,
-						relative = "cursor",
-						border = "shadow",
-						style = "minimal",
-					},
 				},
 				open_file = {
-					quit_on_open = false,
-					eject = true,
+					quit_on_open = false, -- Don't close NvimTree when opening a file
 					resize_window = true,
 					window_picker = {
 						enable = true,
-						picker = "default",
 						chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
 						exclude = {
-							filetype = { "notify", "packer", "qf", "diff", "fugitive", "fugitiveblame" },
+							filetype = {
+								"notify",
+								"packer",
+								"qf",
+								"diff",
+								"fugitive",
+								"fugitiveblame",
+								"TelescopePrompt",
+								"NvimTree",
+							},
 							buftype = { "nofile", "terminal", "help" },
 						},
 					},
@@ -234,45 +188,48 @@ return {
 					close_window = true,
 				},
 			},
-			trash = {
-				cmd = "gio trash",
+
+			-- Add live filtering - search as you type
+			live_filter = {
+				prefix = "🔍 ",
+				always_show_folders = true,
 			},
-			tab = {
-				sync = {
-					open = false,
-					close = false,
-					ignore = {},
-				},
-			},
-			notify = {
-				threshold = vim.log.levels.INFO,
-				absolute_path = true,
-			},
-			help = {
-				sort_by = "key",
-			},
+
+			-- UI and confirmation dialogs
 			ui = {
 				confirm = {
 					remove = true,
 					trash = true,
-					default_yes = false,
 				},
 			},
-			experimental = {},
-			log = {
-				enable = false,
-				truncate = false,
-				types = {
-					all = false,
-					config = false,
-					copy_paste = false,
-					dev = false,
-					diagnostics = false,
-					git = false,
-					profile = false,
-					watcher = false,
-				},
+
+			-- Automatically refresh on file system changes
+			filesystem_watchers = {
+				enable = true,
+				debounce_delay = 50,
 			},
+
+			-- Project-specific settings
+			on_attach = function(bufnr)
+				-- Add custom keybindings when tree is focused
+				local api = require("nvim-tree.api")
+
+				local function opts(desc)
+					return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+				end
+
+				-- Default mappings
+				api.config.mappings.default_on_attach(bufnr)
+
+				-- Custom mappings
+				map("n", "?", api.tree.toggle_help, opts("Help"))
+				map("n", "l", api.node.open.edit, opts("Open"))
+				map("n", "h", api.node.navigate.parent_close, opts("Close Directory"))
+				map("n", "v", api.node.open.vertical, opts("Open: Vertical Split"))
+				map("n", "s", api.node.open.horizontal, opts("Open: Horizontal Split"))
+				map("n", "C", api.tree.change_root_to_node, opts("CD"))
+				map("n", "u", api.tree.change_root_to_parent, opts("Up"))
+			end,
 		})
 	end,
 }
