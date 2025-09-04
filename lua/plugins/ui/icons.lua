@@ -11,6 +11,10 @@ return {
 		"nvim-tree/nvim-web-devicons",
 		config = function()
 			require("nvim-web-devicons").setup({
+				color_icons = true,
+				default = true,
+				variant = "dark",
+				strict = false,
 				override = {
 					zsh = {
 						icon = "",
@@ -29,10 +33,6 @@ return {
 						name = "Source", -- Optional name for the icon
 					},
 				},
-				color_icons = true,
-				default = true,
-				variant = "dark",
-				strict = false,
 				override_by_filename = {
 					[".gitignore"] = {
 						icon = "",
@@ -78,7 +78,7 @@ return {
 					},
 				},
 			})
-			require("nvim-web-devicons").set_default_icon("", "#5e5c5c", 65)
+			require("nvim-web-devicons").set_default_icon("", "#5e5c5c", 65)
 		end,
 	},
 }

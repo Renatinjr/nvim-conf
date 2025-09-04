@@ -66,7 +66,7 @@ return {
 		config = function()
 			local theme = require("config.theme")
 			require("notify").setup({
-				background_colour = theme.current_theme.bg,
+				background_colour = theme.current_theme.bg_notify,
 			})
 		end,
 	},

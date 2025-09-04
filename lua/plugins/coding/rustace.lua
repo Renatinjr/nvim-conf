@@ -4,9 +4,6 @@ return {
 	lazy = false,
 	ft = { "rust" },
 	config = function(_, opts)
-		-- ~/.config/nvim/after/plugin/rustaceanvim.lua
-		-- or add this to your main init.lua/plugins configuration
-
 		-- rustaceanvim configuration
 		vim.g.rustaceanvim = {
 			-- Plugin configuration
@@ -87,8 +84,6 @@ return {
 					vim.keymap.set("n", "<space>cr", "<cmd>RustLsp openCargo<cr>", bufopts)
 					vim.keymap.set("n", "<space>ss", "<cmd>RustLsp ssr<cr>", bufopts)
 					vim.keymap.set("n", "<space>cc", "<cmd>RustLsp flyCheck<cr>", bufopts)
-
-					-- Visual mode mappings
 					vim.keymap.set("v", "<space>ha", "<cmd>RustLsp hover range<cr>", bufopts)
 
 					print("Rust LSP attached to buffer " .. bufnr)
@@ -260,7 +255,6 @@ return {
 				},
 			},
 
-			-- DAP (Debug Adapter Protocol) configuration
 			dap = {
 				adapter = {
 					type = "server",

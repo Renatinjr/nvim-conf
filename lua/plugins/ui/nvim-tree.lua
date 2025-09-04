@@ -8,26 +8,21 @@ return {
 		local WIDTH_RATIO = 0.5
 		local map = vim.keymap.set
 
-		-- Better keybindings with descriptive comments
 		map("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle NvimTree" })
 		map("n", "<leader>nf", "<cmd>NvimTreeFindFile<CR>", { desc = "Find current file in NvimTree" })
 		map("n", "<leader>nr", "<cmd>NvimTreeRefresh<CR>", { desc = "Refresh NvimTree" })
 
 		require("nvim-tree").setup({
-			-- Better project navigation with smart root detection
 			sync_root_with_cwd = true,
 			respect_buf_cwd = true,
 			update_focused_file = {
 				enable = true,
 				update_root = true,
 			},
-
-			-- Improve file sorting and organization
 			sort = {
 				sorter = "case_sensitive",
 				folders_first = true,
 			},
-
 			view = {
 				centralize_selection = true,
 				cursorline = true,
@@ -55,10 +50,9 @@ return {
 					end,
 				},
 			},
-
 			renderer = {
-				add_trailing = true, -- Add trailing slash to folders
-				group_empty = true, -- Group empty directories for cleaner view
+				add_trailing = true,
+				group_empty = true,
 				highlight_git = "name",
 				highlight_opened_files = "icon",
 				highlight_modified = "all",
@@ -120,24 +114,18 @@ return {
 					},
 				},
 			},
-
-			-- Enhance file filters for development workflows
 			filters = {
 				dotfiles = false, -- Show dotfiles by default
 				git_ignored = false,
 				custom = { "^.git$", "^node_modules$", "^.cache$", "^dist$" }, -- Common dirs to hide
 				exclude = { ".gitignore", ".env.example" }, -- Files to never hide
 			},
-
-			-- Improve Git integration
 			git = {
 				enable = true,
 				show_on_dirs = true,
 				show_on_open_dirs = false,
 				timeout = 300,
 			},
-
-			-- Enable diagnostic integration (LSP)
 			diagnostics = {
 				enable = true,
 				show_on_dirs = false,
@@ -149,14 +137,10 @@ return {
 					error = "󰅙 ",
 				},
 			},
-
-			-- Track modified files
 			modified = {
 				enable = true,
 				show_on_dirs = true,
 			},
-
-			-- Improve actions when interacting with files
 			actions = {
 				use_system_clipboard = true,
 				change_dir = {
@@ -188,40 +172,29 @@ return {
 					close_window = true,
 				},
 			},
-
-			-- Add live filtering - search as you type
 			live_filter = {
 				prefix = "🔍 ",
 				always_show_folders = true,
 			},
-
-			-- UI and confirmation dialogs
 			ui = {
 				confirm = {
 					remove = true,
 					trash = true,
 				},
 			},
-
-			-- Automatically refresh on file system changes
 			filesystem_watchers = {
 				enable = true,
 				debounce_delay = 50,
 			},
-
-			-- Project-specific settings
 			on_attach = function(bufnr)
-				-- Add custom keybindings when tree is focused
 				local api = require("nvim-tree.api")
 
 				local function opts(desc)
 					return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
 				end
 
-				-- Default mappings
 				api.config.mappings.default_on_attach(bufnr)
 
-				-- Custom mappings
 				map("n", "?", api.tree.toggle_help, opts("Help"))
 				map("n", "l", api.node.open.edit, opts("Open"))
 				map("n", "h", api.node.navigate.parent_close, opts("Close Directory"))

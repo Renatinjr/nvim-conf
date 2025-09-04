@@ -18,7 +18,7 @@ return {
 					theme = {
 						all = {
 							ui = {
-								-- bg_gutter = "#1F1F29",
+								bg_gutter = "#1F1F29",
 							},
 						},
 					},
@@ -53,9 +53,9 @@ return {
 						CursorLine = { bg = colors.bg_light0 },
 					}
 				end,
-				theme = "wave", -- Load "wave" theme when 'background' option is not set
+				theme = "dragon", -- Load "wave" theme when 'background' option is not set
 				background = { -- map the value of 'background' option to a theme
-					dark = "wave", -- try "dragon" !
+					dark = "dragon", -- try "dragon" !
 					light = "lotus",
 				},
 			})
@@ -70,45 +70,65 @@ return {
 		opts = {},
 		config = function()
 			require("kanagawa-paper").setup({
-				undercurl = false,
-				transparent = true,
-				gutter = true,
-				dimInactive = false, -- disabled when transparent
-				terminalColors = true,
-				commentStyle = { italic = true },
-				functionStyle = { italic = true },
-				keywordStyle = { italic = false, bold = false },
-				statementStyle = { italic = false, bold = false },
-				typeStyle = { italic = false },
-				colors = { theme = {}, palette = { sumiInk0 = "#1F1F28" } }, -- override default palette and theme colors
-				overrides = function(colors) -- override highlight groups
+				theme = "paper", -- "paper" is the darkest variant
+				background = {
+					dark = "paper",
+					light = "lotus",
+				},
+				transparent = false,
+				dimInactive = true,
+				globalStatus = true,
+				colors = {
+					theme = {
+						all = {
+							ui = {
+								bg_gutter = "#201c2c", -- Remove gutter background
+							},
+						},
+					},
+				},
+				overrides = function(colors)
 					local theme = colors.theme
-					local makeDiagnosticColor = function(color)
-						local c = require("kanagawa-paper.lib.color")
-						return { fg = color, bg = c(color):blend(theme.ui.bg, 0.95):to_hex() }
-					end
-
 					return {
-						DiagnosticVirtualTextHint = makeDiagnosticColor(theme.diag.hint),
-						DiagnosticVirtualTextInfo = makeDiagnosticColor(theme.diag.info),
-						DiagnosticVirtualTextWarn = makeDiagnosticColor(theme.diag.warning),
-						DiagnosticVirtualTextError = makeDiagnosticColor(theme.diag.error),
-						Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 }, -- add `blend = vim.o.pumblend` to enable transparency
-						PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
-						PmenuSbar = { bg = theme.ui.bg_m1 },
-						PmenuThumb = { bg = theme.ui.bg_p2 },
-						NormalFloat = { bg = "none" },
-						FloatBorder = { bg = "none" },
-						FloatTitle = { bg = "none" },
-						NormalDark = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m3 },
-						NvimTreeFolderArrowClosed = { fg = "#64748b" },
-						NvimTreeFolderIcon = { fg = "#64748b" },
-						NvimTreeFolderArrowOpen = { fg = "#83a3aa" },
-						CursorLine = { bg = colors.bg_light0 },
+						-- Make everything even darker
+						Normal = { bg = theme.ui.bg_m3 }, -- Darker background
+						NormalNC = { bg = theme.ui.bg_m3 },
+						LineNr = { fg = theme.ui.special },
+						CursorLineNr = { fg = theme.ui.fg },
+						SignColumn = { bg = theme.ui.bg_m3 },
+						Pmenu = { bg = theme.ui.bg_m3 },
+						PmenuSel = { bg = theme.ui.bg_m2 },
+						TelescopeNormal = { bg = theme.ui.bg_m3 },
+						TelescopeBorder = { bg = theme.ui.bg_m3, fg = theme.ui.bg_m3 },
+
+						-- Bufferline customizations for better visibility
+						BufferLineBackground = { bg = theme.ui.bg_m3, fg = theme.ui.fg_dim },
+						BufferLineBufferVisible = { bg = theme.ui.bg_m3, fg = theme.ui.fg_dim },
+						BufferLineBufferSelected = { bg = theme.ui.bg_m3, fg = theme.ui.fg, bold = true },
+
+						-- Make separators more subtle
+						BufferLineSeparator = { fg = theme.ui.bg_m3, bg = theme.ui.bg_m3 },
+						BufferLineSeparatorVisible = { fg = theme.ui.bg_m3, bg = theme.ui.bg_m3 },
+						BufferLineSeparatorSelected = { fg = theme.ui.bg_m3, bg = theme.ui.bg_m3 },
 					}
 				end,
+				plugins = {
+					bufferline = {
+						underline_selected = false,
+						underline_visible = false,
+						underline = false,
+					},
+					indent_blankline = {
+						scope_color = "", -- No scope color for maximum darkness
+					},
+				},
 			})
+
 			-- vim.cmd("colorscheme kanagawa-paper")
+			-- vim.api.nvim_set_hl(0, "Normal", { bg = "#16161D" }) -- Even darker background
+			-- vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#16161D" })
+			-- vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#16161D", fg = "#16161D" })
+			vim.api.nvim_set_hl(0, "WinSeparator", { fg = "#1F1F28" })
 		end,
 	},
 	{
@@ -173,7 +193,7 @@ return {
 				},
 			})
 
-			-- vim.cmd.colorscheme("catppuccin")
+			-- vim.cmd.colorscheme("catppuccin-macchiato")
 		end,
 	},
 	{
@@ -226,7 +246,7 @@ return {
 					},
 				},
 				highlight_groups = {
-					NvimTreeFolderArrowOpen = { fg = "#83a3aa" },
+					NvimTreeFolderArrowOpen = { fg = "#ebbcba" },
 					NormalFloat = { bg = "none" },
 					FloatBorder = { fg = "none" },
 					Comment = { fg = "muted", italic = true },
@@ -241,8 +261,75 @@ return {
 					StatusLineNC = { fg = "subtle", bg = "surface" },
 				},
 			})
-			vim.cmd("colorscheme rose-pine-main")
+			-- vim.cmd("colorscheme rose-pine-main")
 			vim.opt.background = "dark" -- or "light" if you prefer rose-pine-dawn
+		end,
+	},
+	{
+		"webhooked/kanso.nvim",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			require("kanso").setup({
+				-- Kanso specific options
+				style = "dark", -- "dark" or "light"
+				transparent = true,
+				terminal_colors = true,
+
+				-- Custom highlights (if Kanso supports this)
+				on_highlights = function(hl, colors)
+					-- Additional custom highlights
+					local text_color = "#DCD7BA" -- Your desired text color
+					hl.Normal = { fg = text_color, bg = colors.background }
+					hl.NormalFloat = { fg = text_color }
+					hl.NormalNC = { fg = text_color }
+					hl.FloatBorder = { bg = colors.background, fg = colors.background_light }
+					hl.LineNr = { fg = colors.comment }
+					hl.CursorLineNr = { fg = colors.foreground }
+					hl.SignColumn = { bg = colors.background }
+
+					-- Make separators more subtle
+					hl.VertSplit = { fg = colors.background_light }
+					hl.WinSeparator = { fg = colors.background_light }
+
+					-- Bufferline enhancements
+					hl.BufferLineBackground = { bg = colors.background, fg = colors.comment }
+					hl.BufferLineBufferVisible = { bg = colors.background_dark, fg = colors.comment }
+					hl.BufferLineBufferSelected = { bg = colors.background, fg = colors.foreground, bold = true }
+				end,
+
+				-- Plugin integrations
+				plugins = {
+					treesitter = true,
+					cmp = true,
+					gitsigns = true,
+					telescope = true,
+					nvimtree = true,
+					bufferline = true,
+					lsp = true,
+					indent_blankline = {
+						enabled = true,
+						colored_indent_levels = false,
+					},
+					which_key = true,
+					symbols_outline = true,
+					dashboard = true,
+					neogit = true,
+					vim_sneak = true,
+					fern = true,
+					barbar = true,
+					glyph_palette = true,
+				},
+
+				-- Override colors (if needed)
+				colors = {
+					palette = {
+						fg = "#DCD7BA",
+					},
+				},
+			})
+
+			vim.cmd("colorscheme kanso-zen")
 		end,
 	},
 }

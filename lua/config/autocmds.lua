@@ -30,6 +30,37 @@ api.events.subscribe(api.events.Event.TreeOpen, function()
 	vim.opt_local.statuscolumn = ""
 end)
 
+vim.api.nvim_create_user_command("VtslsOrganizeImports", function()
+	vim.lsp.buf.execute_command({
+		command = "_typescript.organizeImports",
+		arguments = { vim.api.nvim_buf_get_name(0) },
+	})
+end, {})
+
+vim.api.nvim_create_user_command("VtslsRenameFile", function(opts)
+	local new_name = opts.args
+	if not new_name or new_name == "" then
+		vim.notify("Please provide a new filename", vim.log.levels.ERROR)
+		return
+	end
+	vim.lsp.buf.execute_command({
+		command = "_typescript.applyRenameFile",
+		arguments = {
+			{
+				sourceUri = vim.uri_from_fname(vim.api.nvim_buf_get_name(0)),
+				targetUri = vim.uri_from_fname(new_name),
+			},
+		},
+	})
+end, { nargs = 1 })
+
+vim.api.nvim_create_user_command("VtslsImportAll", function()
+	vim.lsp.buf.execute_command({
+		command = "_typescript.importAll",
+		arguments = { vim.api.nvim_buf_get_name(0) },
+	})
+end, {})
+
 -- vim.api.nvim_create_autocmd("LspAttach", {
 -- 	callback = function(args)
 -- 		local client = vim.lsp.get_client_by_id(args.data.client_id)

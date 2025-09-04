@@ -40,6 +40,25 @@ return {
 				max_prefix_length = 13,
 				tab_size = 10,
 				diagnostics = "nvim_lsp",
+				format = function(opts)
+					local duplicates = require("bufferline.utils").get_duplicates(opts)
+					local name = opts.name
+					local path = vim.fn.fnamemodify(name, ":h")
+					local filename = vim.fn.fnamemodify(name, ":t")
+
+					if duplicates[name] then
+						return string.format(
+							"%s/%s",
+							"%#BufferLinePath#" .. path .. "%*",
+							"%#BufferLineDuplicate#" .. filename .. "%*"
+						)
+					end
+					return filename
+				end,
+				show_buffer_paths = function(opts)
+					local duplicates = require("bufferline.utils").get_duplicates(opts)
+					return next(duplicates) ~= nil
+				end,
 				custom_filter = function(buf_number)
 					if vim.bo[buf_number].filetype ~= "qf" then
 						return true

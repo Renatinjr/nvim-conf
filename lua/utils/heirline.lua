@@ -267,7 +267,7 @@ local GitBranch = {
 	},
 	{
 		provider = right_slant,
-		hl = { fg = "normal_bg3", bg = "normal_bg2" },
+		hl = { fg = "#090e13", bg = "normal_bg2" },
 	},
 }
 
@@ -321,7 +321,7 @@ local LSPActive = {
 	update = { "LspAttach", "LspDetach" },
 	{
 		provider = left_slant,
-		hl = { fg = "normal_bg3", bg = "normal_bg2" },
+		hl = { fg = "#090e13", bg = "normal_bg2" },
 	},
 
 	{
@@ -336,7 +336,7 @@ local LSPActive = {
 	},
 	{
 		provider = right_slant,
-		hl = { fg = "normal_bg3", bg = "normal_bg2" },
+		hl = { fg = "#090e13", bg = "normal_bg2" },
 	},
 }
 
@@ -432,7 +432,7 @@ local FileEncoding = {
 	hl = { fg = "normal_fg3", bg = "normal_bg3" },
 	{
 		provider = left_slant,
-		hl = { fg = "normal_bg3", bg = "normal_bg2" },
+		hl = { fg = "#090e13", bg = "normal_bg2" },
 	},
 	{
 		provider = function()
@@ -577,7 +577,7 @@ local StatusLine = {
 	{
 		condition = function()
 			local ft = vim.bo.filetype or ""
-			return ft:match("^dapui") or ft == "dap-repl"
+			return ft:match("^dapui") or ft == "dap-repl" or ft:match("^qf")
 		end,
 		FileEncoding,
 	},
@@ -715,6 +715,20 @@ end
 
 -- Convert RGB color code into HSL color object.
 local function rgb_to_hsl(rgb)
+	-- Handle "NONE" and other invalid values
+	if not rgb or type(rgb) ~= "string" or rgb == "" or rgb:upper() == "NONE" then
+		-- Return a default HSL value that represents "no color"
+		-- You might want to handle this differently based on your use case
+		return color_hsl.new(0, 0, 0, "NONE")
+	end
+
+	-- Validate RGB format
+	if not rgb:match("^#%x%x%x%x%x%x$") then
+		print("WARNING: Invalid RGB format: " .. tostring(rgb))
+		-- Return default or handle appropriately
+		return color_hsl.new(0, 0, 0, "#000000")
+	end
+
 	local h, s, l = color_hsl.rgb_string_to_hsl(rgb)
 	return color_hsl.new(h, s, l, rgb)
 end
@@ -724,6 +738,9 @@ end
 --- @param rgb string The RGB color code.
 --- @param value number The 0.0 ~ 1.0 parameter.
 local function shade_rgb(rgb, value)
+	if not rgb or rgb == "" then
+		return rgb -- Return as-is or provide default
+	end
 	if vim.o.background == "light" then
 		return rgb_to_hsl(rgb):tint(value):to_rgb()
 	else
