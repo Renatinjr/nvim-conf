@@ -273,32 +273,89 @@ return {
 			require("kanso").setup({
 				-- Kanso specific options
 				style = "dark", -- "dark" or "light"
-				transparent = true,
+				transparent = false,
 				terminal_colors = true,
 
-				-- Custom highlights (if Kanso supports this)
-				on_highlights = function(hl, colors)
-					-- Additional custom highlights
-					local text_color = "#DCD7BA" -- Your desired text color
-					hl.Normal = { fg = text_color, bg = colors.background }
-					hl.NormalFloat = { fg = text_color }
-					hl.NormalNC = { fg = text_color }
-					hl.FloatBorder = { bg = colors.background, fg = colors.background_light }
-					hl.LineNr = { fg = colors.comment }
-					hl.CursorLineNr = { fg = colors.foreground }
-					hl.SignColumn = { bg = colors.background }
+				overrides = function(colors)
+					local gutter_bg = "#121318"
+					return {
+						SignColumn = { bg = gutter_bg },
+						LineNr = {
+							bg = gutter_bg,
+							fg = colors.comment or "#727169",
+						},
+						CursorLineNr = {
+							bg = gutter_bg,
+							fg = colors.foreground or "#DCD7BA",
+							bold = true,
+						},
+						FoldColumn = {
+							bg = gutter_bg,
+							fg = colors.comment or "#727169",
+						},
+						BlinkCmpMenu = {
+							bg = colors.bg,
+							fg = "#DCD7BA",
+						},
+						BlinkCmpMenuSelection = {
+							bg = "#2A2A37",
+							fg = "#7E9CD8",
+							bold = true,
+						},
+						BlinkCmpMenuBorder = {
+							fg = "#54546D",
+							bg = colors.bg,
+						},
 
-					-- Make separators more subtle
-					hl.VertSplit = { fg = colors.background_light }
-					hl.WinSeparator = { fg = colors.background_light }
+						BlinkCmpDoc = {
+							bg = colors.bg,
+						},
 
-					-- Bufferline enhancements
-					hl.BufferLineBackground = { bg = colors.background, fg = colors.comment }
-					hl.BufferLineBufferVisible = { bg = colors.background_dark, fg = colors.comment }
-					hl.BufferLineBufferSelected = { bg = colors.background, fg = colors.foreground, bold = true }
+						BlinkCmpLabel = {
+							fg = "#DCD7BA",
+						},
+						BlinkCmpLabelMatch = {
+							fg = "#7E9CD8",
+							bold = true,
+						},
+						BlinkCmpLabelDetails = {
+							fg = "#727169",
+						},
+
+						-- Vibrant Kind Colors
+						BlinkCmpKind = {
+							fg = "#957FB8",
+						},
+						BlinkCmpKindText = {
+							fg = "#DCD7BA",
+						},
+						BlinkCmpKindFunction = {
+							fg = "#7E9CD8",
+						},
+						BlinkCmpKindVariable = {
+							fg = "#E46876",
+						},
+						BlinkCmpKindClass = {
+							fg = "#FFA066",
+						},
+						BlinkCmpKindInterface = {
+							fg = "#957FB8",
+						},
+						BlinkCmpKindModule = {
+							fg = "#7FB4CA",
+						},
+						BlinkCmpKindProperty = {
+							fg = "#98BB6C",
+						},
+						BlinkCmpKindKeyword = {
+							fg = "#D27E99",
+						},
+						BlinkCmpKindSnippet = {
+							fg = "#7FB4CA",
+						},
+					}
 				end,
 
-				-- Plugin integrations
 				plugins = {
 					treesitter = true,
 					cmp = true,
@@ -321,7 +378,6 @@ return {
 					glyph_palette = true,
 				},
 
-				-- Override colors (if needed)
 				colors = {
 					palette = {
 						fg = "#DCD7BA",

@@ -83,6 +83,5 @@ return {
 				suggestSpecs = false,
 			},
 		})
-		lspconfig.vtsls.setup(require("plugins.coding.vtsls"))
 	end,
 }

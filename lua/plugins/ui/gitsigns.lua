@@ -8,7 +8,7 @@ return {
 			signs = {
 				add = { text = "▎" },
 				change = { text = "▎" },
-				delete = { text = "▎" },
+				delete = { text = "󰖰" },
 				topdelete = { text = "‾" },
 				changedelete = { text = "~" },
 				untracked = { text = "┆" },
@@ -17,6 +17,7 @@ return {
 			signcolumn = true,
 			numhl = false, -- Highlight line numbers instead
 			linehl = false,
+			sign_priority = 5,
 			_signs_staged_enable = true,
 			on_attach = function(bufnr)
 				local gs = package.loaded.gitsigns
