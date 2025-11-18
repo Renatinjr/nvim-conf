@@ -6,7 +6,8 @@ local color_hsl = require("commons.color.hsl")
 local spawn = require("commons.spawn")
 
 local constants = require("utils.constants")
-local conditions = require("utils.heirline-conditions")
+local conditions = require("lua.plugins.ui.config.heirline-conditions")
+local heir_conditions = require("heirline.conditions")
 
 local black = "#000000"
 local white = "#ffffff"
@@ -73,23 +74,23 @@ local ModeNames = {
 }
 
 local ModeHighlights = {
-	NORMAL = { fg = "normal_fg1", bg = "normal_bg1" },
-	["O-PENDING"] = { fg = "normal_fg1", bg = "normal_bg1" },
-	INSERT = { fg = "insert_fg", bg = "insert_bg" },
-	VISUAL = { fg = "visual_fg", bg = "visual_bg" },
-	["V-LINE"] = { fg = "visual_fg", bg = "visual_bg" },
-	["V-BLOCK"] = { fg = "visual_fg", bg = "visual_bg" },
-	SELECT = { fg = "visual_fg", bg = "visual_bg" },
-	["S-LINE"] = { fg = "visual_fg", bg = "visual_bg" },
-	["S-BLOCK"] = { fg = "visual_fg", bg = "visual_bg" },
-	REPLACE = { fg = "replace_fg", bg = "replace_bg" },
-	MORE = { fg = "replace_fg", bg = "replace_bg" },
-	["V-REPLACE"] = { fg = "replace_fg", bg = "replace_bg" },
-	COMMAND = { fg = "command_fg", bg = "command_bg" },
-	EX = { fg = "command_fg", bg = "command_bg" },
-	CONFIRM = { fg = "command_fg", bg = "command_bg" },
-	SHELL = { fg = "command_fg", bg = "command_bg" },
-	TERMINAL = { fg = "command_fg", bg = "command_bg" },
+	NORMAL = { fg = "normal_fg1", bg = "normal_bg1", bold = true },
+	["O-PENDING"] = { fg = "normal_fg1", bg = "normal_bg1", bold = true },
+	INSERT = { fg = "insert_fg", bg = "insert_bg", bold = true },
+	VISUAL = { fg = "visual_fg", bg = "visual_bg", bold = true },
+	["V-LINE"] = { fg = "visual_fg", bg = "visual_bg", bold = true },
+	["V-BLOCK"] = { fg = "visual_fg", bg = "visual_bg", bold = true },
+	SELECT = { fg = "visual_fg", bg = "visual_bg", bold = true },
+	["S-LINE"] = { fg = "visual_fg", bg = "visual_bg", bold = true },
+	["S-BLOCK"] = { fg = "visual_fg", bg = "visual_bg", bold = true },
+	REPLACE = { fg = "replace_fg", bg = "replace_bg", bold = true },
+	MORE = { fg = "replace_fg", bg = "replace_bg", bold = true },
+	["V-REPLACE"] = { fg = "replace_fg", bg = "replace_bg", bold = true },
+	COMMAND = { fg = "command_fg", bg = "command_bg", bold = true },
+	EX = { fg = "command_fg", bg = "command_bg", bold = true },
+	CONFIRM = { fg = "command_fg", bg = "command_bg", bold = true },
+	SHELL = { fg = "command_fg", bg = "command_bg", bold = true },
+	TERMINAL = { fg = "command_fg", bg = "command_bg", bold = true },
 }
 
 local function GetModeName(mode)
@@ -136,19 +137,21 @@ local Mode = {
 		provider = function(self)
 			return " " .. GetOsIcon() .. " "
 		end,
+		{ bold = true },
 	},
 	-- mode
 	{
 		provider = function(self)
 			return GetModeName(self.mode) .. " "
 		end,
+		{ bold = true },
 	},
 	-- separator
 	{
 		provider = right_slant,
 		hl = function(self)
 			local mode_hl = GetModeHighlight(self.mode)
-			return { fg = mode_hl.bg, bg = "normal_bg2" }
+			return { fg = mode_hl.bg, bg = "normal_bg3" }
 		end,
 	},
 }
@@ -264,7 +267,7 @@ local GitBranch = {
 	},
 	{
 		provider = right_slant,
-		hl = { fg = "normal_bg3", bg = "normal_bg4" },
+		hl = { fg = "#090e13", bg = "normal_bg2" },
 	},
 }
 
@@ -318,7 +321,7 @@ local LSPActive = {
 	update = { "LspAttach", "LspDetach" },
 	{
 		provider = left_slant,
-		hl = { fg = "normal_bg3", bg = "normal_bg4" },
+		hl = { fg = "#090e13", bg = "normal_bg2" },
 	},
 
 	{
@@ -327,18 +330,18 @@ local LSPActive = {
 			for _, server in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
 				table.insert(names, server.name)
 			end
-			return "  " .. table.concat(names, " ") .. " "
+			return " 󰘦 " .. table.concat(names, " ") .. " "
 		end,
 		hl = { fg = "normal_fg3", bg = "normal_bg3", bold = true },
 	},
 	{
 		provider = right_slant,
-		hl = { fg = "normal_bg3", bg = "normal_bg4" },
+		hl = { fg = "#090e13", bg = "normal_bg2" },
 	},
 }
 
 local SearchCount = {
-	hl = { fg = "normal_fg4", bg = "normal_bg4" },
+	hl = { fg = "normal_fg1", bg = "normal_bg2" },
 	provider = function()
 		if vim.v.hlsearch == 0 then
 			return ""
@@ -379,15 +382,15 @@ local DiagnosticColors = {
 	"diagnostic_error",
 	"diagnostic_warn",
 	"diagnostic_info",
-	"diagnostic_hint",
+	"#ffe663",
 }
 
 local function GetDiagnosticHighlight(level)
-	return { fg = DiagnosticColors[level], bg = "normal_bg4" }
+	return { fg = DiagnosticColors[level], bg = "normal_bg2" }
 end
 
 local Diagnostic = {
-	hl = { fg = "normal_fg4", bg = "normal_bg4" },
+	hl = { fg = "normal_fg1", bg = "normal_bg2" },
 	update = { "DiagnosticChanged" },
 
 	{
@@ -429,7 +432,7 @@ local FileEncoding = {
 	hl = { fg = "normal_fg3", bg = "normal_bg3" },
 	{
 		provider = left_slant,
-		hl = { fg = "normal_bg3", bg = "normal_bg4" },
+		hl = { fg = "#090e13", bg = "normal_bg2" },
 	},
 	{
 		provider = function()
@@ -570,21 +573,31 @@ local Progress = {
 }
 
 local StatusLine = {
-	Mode,
-	-- FileName,
-	GitBranch,
-	GitDiff,
-	{ provider = "%=", hl = { fg = "normal_fg2", bg = "normal_bg4" } },
-	LSPActive,
-	{ provider = "%=", hl = { fg = "normal_fg2", bg = "normal_bg4" } },
-	SearchCount,
-	Diagnostic,
-	FileEncoding,
-	FileFormat,
-	FileType,
-	Location,
-	CursorHex,
-	Progress,
+	fallthrough = false,
+	{
+		condition = function()
+			local ft = vim.bo.filetype or ""
+			return ft:match("^dapui") or ft == "dap-repl" or ft:match("^qf")
+		end,
+		FileEncoding,
+	},
+	{
+		Mode,
+		-- FileName,
+		GitBranch,
+		GitDiff,
+		{ provider = "%=", hl = { fg = "normal_fg1", bg = "normal_bg2" } },
+		LSPActive,
+		{ provider = "%=", hl = { fg = "normal_fg1", bg = "normal_bg2" } },
+		SearchCount,
+		Diagnostic,
+		FileEncoding,
+		FileFormat,
+		FileType,
+		Location,
+		CursorHex,
+		Progress,
+	},
 }
 
 -- Get RGB color code from either lualine/airline theme, or fallback to highlighting group, or fallback to default color.
@@ -702,6 +715,20 @@ end
 
 -- Convert RGB color code into HSL color object.
 local function rgb_to_hsl(rgb)
+	-- Handle "NONE" and other invalid values
+	if not rgb or type(rgb) ~= "string" or rgb == "" or rgb:upper() == "NONE" then
+		-- Return a default HSL value that represents "no color"
+		-- You might want to handle this differently based on your use case
+		return color_hsl.new(0, 0, 0, "NONE")
+	end
+
+	-- Validate RGB format
+	if not rgb:match("^#%x%x%x%x%x%x$") then
+		print("WARNING: Invalid RGB format: " .. tostring(rgb))
+		-- Return default or handle appropriately
+		return color_hsl.new(0, 0, 0, "#000000")
+	end
+
 	local h, s, l = color_hsl.rgb_string_to_hsl(rgb)
 	return color_hsl.new(h, s, l, rgb)
 end
@@ -711,6 +738,9 @@ end
 --- @param rgb string The RGB color code.
 --- @param value number The 0.0 ~ 1.0 parameter.
 local function shade_rgb(rgb, value)
+	if not rgb or rgb == "" then
+		return rgb -- Return as-is or provide default
+	end
 	if vim.o.background == "light" then
 		return rgb_to_hsl(rgb):tint(value):to_rgb()
 	else

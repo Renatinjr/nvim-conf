@@ -1,18 +1,11 @@
--- ---- Constants ----
 local M = {}
 
 M.diagnostic = {
-	signs = {
-		error = "", -- nf-fa-times \uf00d
-		warning = "", -- nf-fa-warning \uf071
-		info = "", -- nf-fa-info_circle \uf05a
-		hint = "󰛨", -- nf-fa-bell \uf0f3
-		ok = "", -- nf-fa-check \uf00c
-	},
+  		signs = { error = "󰅚 ", warn = "󰀪 ", hint = "󰌶 ", info = " ",		ok = "" }
 }
 
 M.window = {
-	border = "rounded", -- single,double,rounded,solid,shadow
+	border = "rounded", 
 	layout = {
 		middle = {
 			scale = 0.85,
@@ -33,7 +26,7 @@ M.perf = {
 	maxfilesize = 1024 * 1024 * 5, -- 5 MB
 }
 
-M = vim.tbl_deep_extend("force", M, vim.g.lin_nvim_builtin_constants or {}) --[[@as table]]
+M = vim.tbl_deep_extend("force", M, vim.g.lin_nvim_builtin_constants or {})
 
 local os_name = vim.loop.os_uname().sysname
 

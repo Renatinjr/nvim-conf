@@ -5,7 +5,6 @@ vim.diagnostic.config({
 				virtual_lines = false,
 				update_in_insert = true,
 				float = {
-					-- UI.
 					header = "true",
 					border = "rounded",
 					focusable = true,

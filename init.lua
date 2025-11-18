@@ -1,18 +1,5 @@
 vim.g.mapleader = " "
 
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-
-if not vim.loop.fs_stat(lazypath) then
-	vim.fn.system({
-		"git",
-		"clone",
-		"--filter=blob:none",
-		"https://github.com/folke/lazy.nvim.git",
-		"--branch=stable", -- latest stable release
-		lazypath,
-	})
-end
-
 vim.cmd("au BufRead,BufNewFile *.templ setfiletype templ")
 
 vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
@@ -22,8 +9,6 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
 		vim.api.nvim_buf_set_option(buf, "filetype", "templ")
 	end,
 })
-
-vim.opt.rtp:prepend(lazypath)
 
 -- Set highlight on search
 vim.o.hlsearch = false
@@ -50,9 +35,6 @@ vim.o.undofile = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 
--- Keep signcolumn on by default
-vim.wo.signcolumn = "no"
-
 -- Decrease update time
 vim.o.updatetime = 250
 vim.o.timeoutlen = 300
@@ -72,6 +54,7 @@ local is_windows = vim.loop.os_uname().sysname == "Windows_NT"
 vim.env.PATH = vim.fn.stdpath("data") .. "/mason/bin" .. (is_windows and ";" or ":") .. vim.env.PATH
 vim.opt.clipboard:append({ "unnamed", "unnamedplus" })
 
-require("lazy").setup("plugins")
-require("config.keymaps")
+require("config.lazy").Lazy(_)
+require("config.autocmds")
 require("config.options")
+require("config.keymaps")

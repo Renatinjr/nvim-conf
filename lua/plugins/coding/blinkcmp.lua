@@ -63,7 +63,6 @@ return {
  				},
  			},
 
- 			-- Minha configuração super-TAB
  			keymap = {
  				["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
  				["<C-e>"] = { "hide", "fallback" },

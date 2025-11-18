@@ -1,59 +1,123 @@
 return {
-	"sho-87/kanagawa-paper.nvim",
-	lazy = false,
-	priority = 1000,
-	opts = {},
-	config = function()
-		require("kanagawa-paper").setup({
-			undercurl = true,
-			transparent = true,
-			gutter = true,
-			dimInactive = false, -- disabled when transparent
-			terminalColors = true,
-			commentStyle = { italic = true },
-			functionStyle = { italic = true },
-			keywordStyle = { italic = false, bold = false },
-			statementStyle = { italic = false, bold = false },
-			typeStyle = { italic = false },
-			colors = { theme = {}, palette = {} }, -- override default palette and theme colors
-			overrides = function(colors) -- override highlight groups
-				local theme = colors.theme
-				local makeDiagnosticColor = function(color)
-					local c = require("kanagawa-paper.lib.color")
-					return { fg = color, bg = c(color):blend(theme.ui.bg, 0.95):to_hex() }
-				end
+	{
+		"webhooked/kanso.nvim",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			require("kanso").setup({
+				style = "dark", -- "dark" or "light"
+				transparent = false,
+				terminal_colors = true,
 
-				return {
-					DiagnosticVirtualTextHint = makeDiagnosticColor(theme.diag.hint),
-					DiagnosticVirtualTextInfo = makeDiagnosticColor(theme.diag.info),
-					DiagnosticVirtualTextWarn = makeDiagnosticColor(theme.diag.warning),
-					DiagnosticVirtualTextError = makeDiagnosticColor(theme.diag.error),
-					Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 }, -- add `blend = vim.o.pumblend` to enable transparency
-					PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
-					PmenuSbar = { bg = theme.ui.bg_m1 },
-					PmenuThumb = { bg = theme.ui.bg_p2 },
-					TelescopeTitle = { fg = theme.ui.special, bold = true },
-					TelescopePromptNormal = { bg = theme.ui.bg_p1 },
-					TelescopePromptBorder = { fg = theme.ui.bg_p1, bg = theme.ui.bg_p1 },
-					TelescopeResultsNormal = { fg = theme.ui.fg_m1, bg = theme.ui.bg_dim },
-					TelescopeResultsBorder = { fg = theme.ui.bg_m1, bg = theme.ui.bg_m1 },
-					TelescopePreviewNormal = { bg = theme.ui.bg_dim },
-					TelescopePreviewBorder = { bg = theme.ui.bg_dim, fg = theme.ui.bg_dim },
-					NormalFloat = { bg = "none" },
-					FloatBorder = { bg = "none" },
-					FloatTitle = { bg = "none" },
-					NormalDark = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m3 },
-					LazyNormal = { bg = theme.ui.bg_m3, fg = theme.ui.fg_dim },
-					MasonNormal = { bg = theme.ui.bg_m3, fg = theme.ui.fg_dim },
-					NvimTreeFolderArrowClosed = { fg = "#64748b" },
-					NvimTreeFolderIcon = { fg = "#64748b" },
-					NvimTreeFolderArrowOpen = { fg = "#83a3aa" },
-					CursorLine = { bg = colors.bg_light0 },
-					BufferLineIndicatorSelected = { fg = colors.warning, bg = colors.error },
-					BufferLineFill = { fg = colors.springGreen, bg = colors.springGreen },
-				}
-			end,
-		})
-		vim.cmd("colorscheme kanagawa-paper-ink")
-	end,
+				overrides = function(colors)
+					local gutter_bg = "#121318"
+					return {
+						SignColumn = { bg = gutter_bg },
+						LineNr = {
+							bg = gutter_bg,
+							fg = colors.comment or "#727169",
+						},
+						CursorLineNr = {
+							bg = gutter_bg,
+							fg = colors.foreground or "#DCD7BA",
+							bold = true,
+						},
+						FoldColumn = {
+							bg = gutter_bg,
+							fg = colors.comment or "#727169",
+						},
+						BlinkCmpMenu = {
+							bg = colors.bg,
+							fg = "#DCD7BA",
+						},
+						BlinkCmpMenuSelection = {
+							bg = "#2A2A37",
+							fg = "#7E9CD8",
+							bold = true,
+						},
+						BlinkCmpMenuBorder = {
+							fg = "#54546D",
+							bg = colors.bg,
+						},
+
+						BlinkCmpDoc = {
+							bg = colors.bg,
+						},
+
+						BlinkCmpLabel = {
+							fg = "#DCD7BA",
+						},
+						BlinkCmpLabelMatch = {
+							fg = "#7E9CD8",
+							bold = true,
+						},
+						BlinkCmpLabelDetails = {
+							fg = "#727169",
+						},
+
+						-- Vibrant Kind Colors
+						BlinkCmpKind = {
+							fg = "#957FB8",
+						},
+						BlinkCmpKindText = {
+							fg = "#DCD7BA",
+						},
+						BlinkCmpKindFunction = {
+							fg = "#7E9CD8",
+						},
+						BlinkCmpKindVariable = {
+							fg = "#E46876",
+						},
+						BlinkCmpKindClass = {
+							fg = "#FFA066",
+						},
+						BlinkCmpKindInterface = {
+							fg = "#957FB8",
+						},
+						BlinkCmpKindModule = {
+							fg = "#7FB4CA",
+						},
+						BlinkCmpKindProperty = {
+							fg = "#98BB6C",
+						},
+						BlinkCmpKindKeyword = {
+							fg = "#D27E99",
+						},
+						BlinkCmpKindSnippet = {
+							fg = "#7FB4CA",
+						},
+					}
+				end,
+
+				plugins = {
+					treesitter = true,
+					cmp = true,
+					gitsigns = true,
+					telescope = true,
+					nvimtree = true,
+					bufferline = true,
+					lsp = true,
+					indent_blankline = {
+						enabled = true,
+						colored_indent_levels = false,
+					},
+					which_key = true,
+					symbols_outline = true,
+					dashboard = true,
+					neogit = true,
+					vim_sneak = true,
+					fern = true,
+					barbar = true,
+					glyph_palette = true,
+				},
+
+				colors = {
+					palette = {
+						fg = "#DCD7BA",
+					},
+				},
+			})
+			vim.cmd("colorscheme kanso-zen")
+		end,
+	},
 }
