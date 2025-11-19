@@ -7,6 +7,8 @@ local gitsigns = load_plugin("gitsigns")
 local heirline = load_plugin("heirline")
 local dash = load_plugin("dash")
 local bufferline = load_plugin("bufferline")
+local icons = load_plugin("icons")
+local crates = load_plugin("crates")
 
 return {
 	nvim_tree,
@@ -14,4 +16,6 @@ return {
 	heirline,
 	dash,
 	bufferline,
+	icons,
+	crates,
 }

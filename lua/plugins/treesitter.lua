@@ -21,6 +21,9 @@ return {
 				"sql",
 				"svelte",
 			},
+			highlight = {
+				enable = true,
+			},
 			query_linter = {
 				enable = true,
 				use_virtual_text = true,

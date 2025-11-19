@@ -10,15 +10,6 @@ return {
 		vim.keymap.set("n", "wa", "<cmd>lua vim.lsp.buf.add_workspace_folder<CR>", { noremap = true, silent = true })
 		vim.keymap.set("n", "wr", "<cmd>lua vim.lsp.buf.remove_workspace_folder<CR>", { noremap = true, silent = true })
 
-    local util = require("lua.utils.constants")
-    local s = util.diagnostic.signs
-
-		local signs = { Error =s.error , Warn = s.warn, Hint = s.hint, Info = s.info }
-		for type, icon in pairs(signs) do
-			local hl = "DiagnosticSign" .. type
-			vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-		end
-
 		local lspconfig = require("lspconfig")
 		local capabilities = {
 			textDocument = {
@@ -56,4 +47,3 @@ return {
 		})
 	end,
 }
-

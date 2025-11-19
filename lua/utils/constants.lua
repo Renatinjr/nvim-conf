@@ -1,11 +1,11 @@
 local M = {}
 
 M.diagnostic = {
-  		signs = { error = "󰅚 ", warn = "󰀪 ", hint = "󰌶 ", info = " ",		ok = "" }
+	signs = { error = "󰅚 ", warn = "󰀪 ", hint = "󰌶 ", info = " ", ok = "" },
 }
 
 M.window = {
-	border = "rounded", 
+	border = "rounded",
 	layout = {
 		middle = {
 			scale = 0.85,
