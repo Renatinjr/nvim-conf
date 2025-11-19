@@ -13,7 +13,7 @@ local kanagawa = function()
 		fzf = {
 			setup_colors = function()
 				local colors = {
-					bg = "#1F1F28",
+					-- bg = "#1F1F28",
 					fg = "#DCD7BA",
 					border = "#54546D",
 					cursor_line_bg = "#2A2A37",
@@ -1901,7 +1901,7 @@ local kanagawa_paper = function()
 end
 
 local kanso = function()
-	local colors = require("kanso.colors")
+	local colors = require("kanso.colors").setup({ theme = "zen" })
 	return {
 		bg = colors.background,
 		bg_sec = colors.background_dark,
@@ -1928,30 +1928,36 @@ local kanso = function()
 
 				local highlights = {
 					FzfLuaNormal = { bg = fzf_colors.bg, fg = fzf_colors.fg },
-					FzfLuaBorder = { fg = fzf_colors.border },
-					FzfLuaCursorLine = { bg = fzf_colors.cursor_line_bg, fg = fzf_colors.fg },
+					FzfLuaBorder = { fg = "#a4a7a4" },
+					FzfLuaCursorLine = { bg = fzf_colors.cursor_line_bg, fg = fzf_colors.purple },
 					FzfLuaTitle = { fg = fzf_colors.blue, bold = true },
-					FzfLuaPrompt = { fg = fzf_colors.light_blue, bold = true },
-					FzfLuaPointer = { fg = fzf_colors.red, bold = true },
+					FzfLuaPrompt = { fg = fzf_colors.purple, bold = true },
+					FzfLuaPointer = { fg = fzf_colors.purple, bold = true }, -- Pointer color set to purple
 					FzfLuaMarker = { fg = fzf_colors.green },
-					FzfLuaSpinner = { fg = fzf_colors.orange, bold = true },
+					FzfLuaSpinner = { fg = fzf_colors.purple, bold = true },
 					FzfLuaHeader = { fg = fzf_colors.comment },
 					FzfLuaPreviewTitle = { fg = fzf_colors.purple, bold = true },
 				}
 
 				for group, opts in pairs(highlights) do
 					vim.api.nvim_set_hl(0, group, opts)
+					vim.cmd([[highlight FzfLuaPointer guifg=#828a9e]]) -- Pink color example
 				end
 
 				return {
-					normal = "Normal",
-					border = "Comment",
-					help_normal = "Normal",
-					help_border = "Comment",
-					preview_title = { fg = fzf_colors.purple, bold = true },
-					prompt = { fg = fzf_colors.blue, bold = true },
-					pointer = { fg = fzf_colors.red, bold = true },
-					spinner = { fg = fzf_colors.green, bold = true },
+					normal = "FzfLuaNormal",
+					border = "FzfLuaBorder",
+					cursor = "FzfLuaPointer", -- This controls the pointer color
+					cursorline = "FzfLuaCursorLine",
+					title = "FzfLuaTitle",
+					prompt = "FzfLuaPrompt",
+					pointer = "FzfLuaPointer", -- Pointer color reference
+					marker = "FzfLuaMarker",
+					spinner = "FzfLuaSpinner",
+					header = "FzfLuaHeader",
+					preview_title = "FzfLuaPreviewTitle",
+					help_normal = "FzfLuaNormal",
+					help_border = "FzfLuaBorder",
 				}
 			end,
 		},
@@ -2223,6 +2229,7 @@ M.rose_pine_dark = rose_pine_dark()
 M.kanagawa_dark = kanagawa_dark()
 M.catppuccin_dark = catppuccin_dark()
 M.kanagawa_paper = kanagawa_paper()
+M.kanso = kanso()
 
 M.current_theme = kanso()
 

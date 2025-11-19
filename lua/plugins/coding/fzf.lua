@@ -50,15 +50,20 @@ return {
 		local hl = theme.current_theme.fzf.setup_colors()
 
 		require("fzf-lua").setup({
+			pointer = "",
 			winopts = {
 				height = 0.85,
 				width = 0.80,
+				markers = { selected = "" },
 				preview = {
 					horizontal = "right:60%",
 					layout = "horizontal",
-					wrap = "nowrap",
+					wra = "nowrap",
 					scrollbar = false,
 				},
+			},
+			fzf_opts = {
+				["--pointer"] = "󰫤 ",
 			},
 			fzf_colors = {
 				["fg"] = { "fg", "FzfLuaNormal" },
@@ -74,6 +79,7 @@ return {
 				["marker"] = { "fg", "FzfLuaMarker" },
 				["spinner"] = { "fg", "FzfLuaSpinner" },
 				["header"] = { "fg", "FzfLuaHeader" },
+				["gutter"] = { "bg", "Normal" },
 			},
 			previewers = {
 				bat = {

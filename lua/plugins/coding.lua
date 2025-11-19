@@ -10,6 +10,7 @@ local wk = load_plugin("wichkey")
 local indentblank = load_plugin("indentblank")
 local blink = load_plugin("blinkcmp")
 local noice = load_plugin("noice")
+local tmux_navigator = load_plugin("tmux-navigator")
 
 return {
 	coding,
@@ -20,4 +21,5 @@ return {
 	indentblank,
 	blink,
 	noice,
+	tmux_navigator,
 }

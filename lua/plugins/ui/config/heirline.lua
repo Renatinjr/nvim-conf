@@ -150,7 +150,7 @@ local Mode = {
 		provider = right_slant,
 		hl = function(self)
 			local mode_hl = GetModeHighlight(self.mode)
-			return { fg = mode_hl.bg, bg = "normal_bg3" }
+			return { fg = mode_hl.bg, bg = "#090e13" }
 		end,
 	},
 }
@@ -216,7 +216,7 @@ local git_branch_name_cache = nil
 local git_branch_status_cache = nil
 
 local GitBranch = {
-	hl = { fg = "normal_fg3", bg = "normal_bg3" },
+	hl = { fg = "normal_fg3", bg = "#090e13" },
 	update = { "User", pattern = "HeirlineGitBranchUpdated" },
 
 	{
@@ -237,7 +237,7 @@ local GitBranch = {
 			end
 		end,
 		hl = function(self)
-			return { fg = "git_dirty", bg = "normal_bg3" }
+			return { fg = "git_dirty", bg = "#090e13" }
 		end,
 	},
 	{
@@ -249,7 +249,7 @@ local GitBranch = {
 			end
 		end,
 		hl = function(self)
-			return { fg = "git_ahead", bg = "normal_bg3" }
+			return { fg = "git_ahead", bg = "#090e13" }
 		end,
 	},
 	{
@@ -261,7 +261,7 @@ local GitBranch = {
 			end
 		end,
 		hl = function(self)
-			return { fg = "git_behind", bg = "normal_bg3" }
+			return { fg = "git_behind", bg = "#090e13" }
 		end,
 	},
 	{
@@ -373,7 +373,7 @@ local function GetDiagnosticText(level)
 	if value <= 0 then
 		return ""
 	else
-		return string.format("%s %d ", DiagnosticSigns[level], value)
+		return string.format("%s %d ", DiagnosticSigns[level]:gsub("%s+", ""), value)
 	end
 end
 

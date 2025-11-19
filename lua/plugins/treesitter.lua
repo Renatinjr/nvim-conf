@@ -1,63 +1,122 @@
 return {
-	{ "nvim-treesitter/playground", cmd = "TSPlaygroundToggle" },
-
-	{
-		"nvim-treesitter/nvim-treesitter",
-		opts = {
+	"nvim-treesitter/nvim-treesitter",
+	build = ":TSUpdate",
+	event = { "BufReadPost", "BufNewFile" },
+	dependencies = {
+		"nvim-treesitter/nvim-treesitter-textobjects",
+	},
+	config = function()
+		require("nvim-treesitter.configs").setup({
+			-- Install parsers for these languages
 			ensure_installed = {
-				"astro",
-				"cmake",
-				"cpp",
-				"css",
-				"fish",
-				"gitignore",
-				"go",
-				"graphql",
-				"http",
-				"java",
-				"php",
+				"typescript",
+				"javascript",
+				"tsx",
 				"rust",
-				"scss",
-				"sql",
-				"svelte",
+				"go",
+				"lua",
+				"vim",
+				"vimdoc",
+				"html",
+				"css",
+				"json",
+				"markdown",
+				"markdown_inline",
+				"bash",
 			},
+
+			-- Install parsers synchronously (only applied to `ensure_installed`)
+			sync_install = false,
+
+			-- Automatically install missing parsers when entering buffer
+			auto_install = true,
+
+			-- Highlighting configuration
 			highlight = {
 				enable = true,
-			},
-			query_linter = {
-				enable = true,
-				use_virtual_text = true,
-				lint_events = { "BufWrite", "CursorHold" },
+				disable = function(lang, buf)
+					local max_filesize = 100 * 1024 -- 100 KB
+					local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+					if ok and stats and stats.size > max_filesize then
+						return true
+					end
+				end,
+				additional_vim_regex_highlighting = false,
 			},
 
-			playground = {
+			-- Indentation based on treesitter
+			indent = {
 				enable = true,
-				disable = {},
-				updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
-				persist_queries = true, -- Whether the query persists across vim sessions
-				keybindings = {
-					toggle_query_editor = "o",
-					toggle_hl_groups = "i",
-					toggle_injected_languages = "t",
-					toggle_anonymous_nodes = "a",
-					toggle_language_display = "I",
-					focus_language = "f",
-					unfocus_language = "F",
-					update = "R",
-					goto_node = "<cr>",
-					show_help = "?",
+				-- Disable for languages where it might cause issues
+				disable = { "python" },
+			},
+
+			-- Incremental selection
+			incremental_selection = {
+				enable = true,
+				keymaps = {
+					init_selection = "<C-space>",
+					node_incremental = "<C-space>",
+					scope_incremental = "<C-s>",
+					node_decremental = "<C-backspace>",
 				},
 			},
-		},
-		config = function(_, opts)
-			require("nvim-treesitter.configs").setup(opts)
 
-			vim.filetype.add({
-				extension = {
-					mdx = "mdx",
+			-- Textobjects configuration
+			textobjects = {
+				select = {
+					enable = true,
+					lookahead = true, -- Automatically jump forward to textobj
+					keymaps = {
+						-- You can use the capture groups defined in textobjects.scm
+						["af"] = "@function.outer",
+						["if"] = "@function.inner",
+						["ac"] = "@class.outer",
+						["ic"] = "@class.inner",
+						["aa"] = "@parameter.outer",
+						["ia"] = "@parameter.inner",
+					},
 				},
-			})
-			vim.treesitter.language.register("markdown", "mdx")
-		end,
-	},
+				move = {
+					enable = true,
+					set_jumps = true, -- Add jumps to the jumplist
+					goto_next_start = {
+						["]m"] = "@function.outer",
+						["]]"] = "@class.outer",
+					},
+					goto_next_end = {
+						["]M"] = "@function.outer",
+						["]["] = "@class.outer",
+					},
+					goto_previous_start = {
+						["[m"] = "@function.outer",
+						["[["] = "@class.outer",
+					},
+					goto_previous_end = {
+						["[M"] = "@function.outer",
+						["[]"] = "@class.outer",
+					},
+				},
+				swap = {
+					enable = true,
+					swap_next = {
+						["<leader>a"] = "@parameter.inner",
+					},
+					swap_previous = {
+						["<leader>A"] = "@parameter.inner",
+					},
+				},
+			},
+
+			-- Enable folding based on treesitter
+			fold = {
+				enable = true,
+			},
+		})
+
+		-- Enable treesitter folding
+		vim.opt.foldmethod = "expr"
+		vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+		vim.opt.foldenable = false -- Don't fold by default
+	end,
 }

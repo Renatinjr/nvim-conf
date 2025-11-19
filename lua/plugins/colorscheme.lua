@@ -1,6 +1,8 @@
 return {
 	{
 		"rebelot/kanagawa.nvim",
+		lazy = false,
+		priority = 1000,
 		config = function()
 			require("kanagawa").setup({
 				compile = false, -- enable compiling the colorscheme
@@ -9,56 +11,120 @@ return {
 				functionStyle = {},
 				keywordStyle = { italic = true },
 				statementStyle = { bold = true },
-				priority = 1000,
 				typeStyle = {},
-				transparent = true, -- do not set background color
-				dimInactive = false, -- dim inactive window `:h hl-NormalNC`
-				terminalColors = false, -- define vim.g.terminal_color_{0,17}
-				colors = { -- add/modify theme and palette colors
+				transparent = true,
+				terminalColors = true,
+				colors = {
 					theme = {
 						all = {
 							ui = {
-								bg_gutter = "#1F1F29",
+								bg_gutter = "none", -- makes gutter transparent
 							},
 						},
 					},
-					palette = {
-						surimiOrange = "#C8C093",
-					},
-					-- theme = { wave = {}, lotus = {}, dragon = {}, all = {} },
 				},
-				overrides = function(colors) -- add/modify highlights
+				overrides = function(colors)
 					local theme = colors.theme
-					local makeDiagnosticColor = function(color)
-						local c = require("kanagawa.lib.color")
-						return { fg = color, bg = c(color):blend(theme.ui.bg, 0.95):to_hex() }
-					end
+					local gutter_bg = "#090e13"
+					local custom_bg = "#0A0E14" -- Your custom background color
 					return {
-						DiagnosticVirtualTextHint = makeDiagnosticColor(theme.diag.hint),
-						DiagnosticVirtualTextInfo = makeDiagnosticColor(theme.diag.info),
-						DiagnosticVirtualTextWarn = makeDiagnosticColor(theme.diag.warning),
-						DiagnosticVirtualTextError = makeDiagnosticColor(theme.diag.error),
-						Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 }, -- add `blend = vim.o.pumblend` to enable transparency
-						PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
-						PmenuSbar = { bg = theme.ui.bg_m1 },
-						PmenuThumb = { bg = theme.ui.bg_p2 },
-						TelescopeTitle = { fg = theme.ui.special, bold = true },
-						NormalFloat = { bg = "none" },
-						FloatBorder = { bg = "none" },
-						FloatTitle = { bg = "none" },
-						NormalDark = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m3 },
-						NvimTreeFolderArrowClosed = { fg = "#64748b" },
-						NvimTreeFolderIcon = { fg = "#64748b" },
-						NvimTreeFolderArrowOpen = { fg = "#83a3aa" },
-						CursorLine = { bg = colors.bg_light0 },
+						-- Gutter and line numbers
+						-- Normal = { bg = custom_bg },
+						NormalFloat = { bg = custom_bg },
+						NormalNC = { bg = custom_bg },
+						SignColumn = { bg = gutter_bg },
+						LineNr = {
+							bg = gutter_bg,
+							fg = theme.syn.comment or "#727169",
+						},
+						CursorLineNr = {
+							bg = gutter_bg,
+							fg = theme.ui.fg or "#DCD7BA",
+							bold = true,
+						},
+						FoldColumn = {
+							bg = gutter_bg,
+							fg = theme.syn.comment or "#727169",
+						},
+
+						-- BlinkCmp menu styles
+						BlinkCmpMenu = {
+							bg = theme.ui.bg,
+							fg = "#DCD7BA",
+						},
+						BlinkCmpMenuSelection = {
+							bg = "#2A2A37",
+							fg = theme.ui.special or "#7E9CD8",
+							bold = true,
+						},
+						BlinkCmpMenuBorder = {
+							fg = theme.ui.nontext or "#54546D",
+							bg = theme.ui.bg,
+						},
+
+						BlinkCmpDoc = {
+							bg = theme.ui.bg,
+						},
+
+						BlinkCmpLabel = {
+							fg = "#DCD7BA",
+						},
+						BlinkCmpLabelMatch = {
+							fg = theme.ui.special or "#7E9CD8",
+							bold = true,
+						},
+						BlinkCmpLabelDetails = {
+							fg = theme.syn.comment or "#727169",
+						},
+
+						-- Vibrant Kind Colors
+						BlinkCmpKind = {
+							fg = theme.syn.constant or "#957FB8",
+						},
+						BlinkCmpKindText = {
+							fg = "#DCD7BA",
+						},
+						BlinkCmpKindFunction = {
+							fg = theme.syn.fun or "#7E9CD8",
+						},
+						BlinkCmpKindVariable = {
+							fg = theme.syn.identifier or "#E46876",
+						},
+						BlinkCmpKindClass = {
+							fg = theme.syn.type or "#FFA066",
+						},
+						BlinkCmpKindInterface = {
+							fg = theme.syn.constant or "#957FB8",
+						},
+						BlinkCmpKindModule = {
+							fg = theme.syn.preproc or "#7FB4CA",
+						},
+						BlinkCmpKindProperty = {
+							fg = theme.syn.string or "#98BB6C",
+						},
+						BlinkCmpKindKeyword = {
+							fg = theme.syn.keyword or "#D27E99",
+						},
+						BlinkCmpKindSnippet = {
+							fg = theme.syn.preproc or "#7FB4CA",
+						},
+						NvimTreeNormal = { bg = "#0A0E14" },
+						NvimTreeEndOfBuffer = { bg = "#0A0E14" },
+						NvimTreeNormalNC = { bg = "#0A0E14" },
+						NvimTreeVertSplit = { bg = "#0A0E14", fg = "#0A0E14" },
+						NvimTreeWinSeparator = { bg = "#0A0E14", fg = "#0A0E14" },
+						NvimTreeFolderIcon = { fg = theme.syn.fun or "#7E9CD8", bg = "#0A0E14" },
+						NvimTreeIndentMarker = { fg = theme.ui.nontext or "#54546D", bg = "#0A0E14" },
 					}
 				end,
-				theme = "dragon", -- Load "wave" theme when 'background' option is not set
-				background = { -- map the value of 'background' option to a theme
-					dark = "dragon", -- try "dragon" !
+				theme = "wave", -- can be "wave", "dragon", or "lotus"
+
+				background = {
+					dark = "wave",
 					light = "lotus",
 				},
 			})
+
 			-- vim.cmd("colorscheme kanagawa")
 		end,
 	},
@@ -271,13 +337,13 @@ return {
 		priority = 1000,
 		config = function()
 			require("kanso").setup({
-				-- Kanso specific options
 				style = "dark", -- "dark" or "light"
 				transparent = false,
 				terminal_colors = true,
 
 				overrides = function(colors)
 					local gutter_bg = "#090e13"
+					local custom_bg = "#0A0E14"
 					return {
 						SignColumn = { bg = gutter_bg },
 						LineNr = {
@@ -353,6 +419,15 @@ return {
 						BlinkCmpKindSnippet = {
 							fg = "#7FB4CA",
 						},
+						FzfLuaPointer = { fg = colors.palette.carpYellow },
+						NvimTreeNormal = { bg = "#0A0E14" },
+						NvimTreeEndOfBuffer = { bg = "#0A0E14" },
+						NvimTreeNormalNC = { bg = "#0A0E14" },
+						NvimTreeVertSplit = { bg = "#0A0E14", fg = "#0A0E14" },
+						NvimTreeWinSeparator = { bg = "#0A0E14", fg = "#0A0E14" },
+						Normal = { bg = custom_bg },
+						NormalFloat = { bg = custom_bg },
+						NormalNC = { bg = custom_bg },
 					}
 				end,
 
@@ -380,7 +455,7 @@ return {
 
 				colors = {
 					palette = {
-						fg = "#e4dcae",
+						fg = "#e6e0c1",
 					},
 				},
 			})
