@@ -1,3 +1,5 @@
+local map = vim.keymap.set
+
 return {
 	"mrcjkb/rustaceanvim",
 	version = "^4",
@@ -46,21 +48,20 @@ return {
 					vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 
 					local bufopts = { noremap = true, silent = true, buffer = bufnr }
-
-					vim.keymap.set("n", "<space>rr", "<cmd>RustLsp runnables<cr>", bufopts)
-					vim.keymap.set("n", "<space>rd", "<cmd>RustLsp debuggables<cr>", bufopts)
-					vim.keymap.set("n", "<space>rt", "<cmd>RustLsp testables<cr>", bufopts)
-					vim.keymap.set("n", "<space>em", "<cmd>RustLsp expandMacro<cr>", bufopts)
-					vim.keymap.set("n", "<space>pm", "<cmd>RustLsp parentModule<cr>", bufopts)
-					vim.keymap.set("n", "<space>jl", "<cmd>RustLsp joinLines<cr>", bufopts)
-					vim.keymap.set("n", "<space>ha", "<cmd>RustLsp hover actions<cr>", bufopts)
-					vim.keymap.set("n", "<space>hg", "<cmd>RustLsp hover range<cr>", bufopts)
-					vim.keymap.set("n", "<space>mu", "<cmd>RustLsp moveItem up<cr>", bufopts)
-					vim.keymap.set("n", "<space>md", "<cmd>RustLsp moveItem down<cr>", bufopts)
-					vim.keymap.set("n", "<space>cr", "<cmd>RustLsp openCargo<cr>", bufopts)
-					vim.keymap.set("n", "<space>ss", "<cmd>RustLsp ssr<cr>", bufopts)
-					vim.keymap.set("n", "<space>cc", "<cmd>RustLsp flyCheck<cr>", bufopts)
-					vim.keymap.set("v", "<space>ha", "<cmd>RustLsp hover range<cr>", bufopts)
+					map("n", "<space>rr", "<cmd>RustLsp runnables<cr>", bufopts)
+					map("n", "<space>rd", "<cmd>RustLsp debuggables<cr>", bufopts)
+					map("n", "<space>rt", "<cmd>RustLsp testables<cr>", bufopts)
+					map("n", "<space>em", "<cmd>RustLsp expandMacro<cr>", bufopts)
+					map("n", "<space>pm", "<cmd>RustLsp parentModule<cr>", bufopts)
+					map("n", "<space>jl", "<cmd>RustLsp joinLines<cr>", bufopts)
+					map("n", "<space>ha", "<cmd>RustLsp hover actions<cr>", bufopts)
+					map("n", "<space>hg", "<cmd>RustLsp hover range<cr>", bufopts)
+					map("n", "<space>mu", "<cmd>RustLsp moveItem up<cr>", bufopts)
+					map("n", "<space>md", "<cmd>RustLsp moveItem down<cr>", bufopts)
+					map("n", "<space>cr", "<cmd>RustLsp openCargo<cr>", bufopts)
+					map("n", "<space>ss", "<cmd>RustLsp ssr<cr>", bufopts)
+					map("n", "<space>cc", "<cmd>RustLsp flyCheck<cr>", bufopts)
+					map("v", "<space>ha", "<cmd>RustLsp hover range<cr>", bufopts)
 
 					print("Rust LSP attached to buffer " .. bufnr)
 				end,

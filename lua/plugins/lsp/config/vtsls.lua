@@ -1,3 +1,5 @@
+local map = vim.keymap.set
+
 return {
 	"yioneko/nvim-vtsls",
 	lazy = true,
@@ -52,42 +54,24 @@ return {
 				local bufopts = { noremap = true, silent = true, buffer = bufnr }
 				local curr_path = vim.fn.getcwd()
 				local command = "<cmd>term ~/.local/share/nvim/mason/bin/prettier --write " .. curr_path .. "<CR>"
-				vim.keymap.set("n", "<leader>pw", command, { desc = "Prettier Format All" })
-				vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
-				vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
-				vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
-				vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
-				vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
-				vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, bufopts)
-				vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
-				vim.keymap.set("n", "<space>wl", function()
-					print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-				end, bufopts)
-				vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, bufopts)
-				vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, bufopts)
-				vim.keymap.set("n", "<space>ca", vim.lsp.buf.code_action, bufopts)
-				vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
-				vim.keymap.set("n", "<space>f", function()
-					vim.lsp.buf.format({ async = true })
-				end, bufopts)
-
-				vim.keymap.set("n", "<space>to", function()
+				map("n", "<leader>pw", command, { desc = "Prettier Format All" })
+				map("n", "<space>to", function()
 					vtsls.commands.organize_imports(0)
 				end, bufopts)
 
-				vim.keymap.set("n", "<space>tu", function()
+				map("n", "<space>tu", function()
 					vtsls.commands.remove_unused_imports(0)
 				end, bufopts)
 
-				vim.keymap.set("n", "<space>td", function()
+				map("n", "<space>td", function()
 					vtsls.commands.fix_all(0)
 				end, bufopts)
 
-				vim.keymap.set("n", "<space>tR", function()
+				map("n", "<space>tR", function()
 					vtsls.commands.restart_tsserver()
 				end, bufopts)
 
-				vim.keymap.set("n", "<space>tf", function()
+				map("n", "<space>tf", function()
 					vtsls.commands.file_references(0)
 				end, bufopts)
 			end,
