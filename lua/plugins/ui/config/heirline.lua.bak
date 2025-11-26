@@ -7,7 +7,6 @@ local spawn = require("commons.spawn")
 
 local constants = require("utils.constants")
 local conditions = require("lua.plugins.ui.config.heirline-conditions")
-local heir_conditions = require("heirline.conditions")
 
 local black = "#000000"
 local white = "#ffffff"

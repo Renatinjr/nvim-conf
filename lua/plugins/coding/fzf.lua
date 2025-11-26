@@ -1,49 +1,127 @@
-local map_opts = { noremap = true, silent = true }
-
 return {
 	"ibhagwan/fzf-lua",
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 	keys = {
 		-- Find files
-		{ "<leader>ff", "<cmd>lua require('fzf-lua').files()<CR>", map_opts },
+		{
+			"<leader>ff",
+			"<cmd>lua require('fzf-lua').files()<CR>",
+			{ desc = "Find files", noremap = true, silent = true },
+		},
 		-- Find git files
-		{ "<leader>fg", "<cmd>lua require('fzf-lua').git_files()<CR>", map_opts },
+		{
+			"<leader>fg",
+			"<cmd>lua require('fzf-lua').git_files()<CR>",
+			{ desc = "Find git files", noremap = true, silent = true },
+		},
 		-- Find recent files
-		{ "<leader>fr", "<cmd>lua require('fzf-lua').oldfiles()<CR>", map_opts },
+		{
+			"<leader>fr",
+			"<cmd>lua require('fzf-lua').oldfiles()<CR>",
+			{ desc = "Find recent files", noremap = true, silent = true },
+		},
 		-- Find buffers
-		{ "<leader>fb", "<cmd>lua require('fzf-lua').buffers()<CR>", map_opts },
+		{
+			"<leader>fb",
+			"<cmd>lua require('fzf-lua').buffers()<CR>",
+			{ desc = "Find buffers", noremap = true, silent = true },
+		},
 		-- Find in current buffer
-		{ "<leader>fl", "<cmd>lua require('fzf-lua').blines()<CR>", map_opts },
+		{
+			"<leader>fl",
+			"<cmd>lua require('fzf-lua').blines()<CR>",
+			{ desc = "Find lines in current buffer", noremap = true, silent = true },
+		},
 		-- Live grep
-		{ "<leader>fs", "<cmd>lua require('fzf-lua').live_grep()<CR>", map_opts },
+		{
+			"<leader>fs",
+			"<cmd>lua require('fzf-lua').live_grep()<CR>",
+			{ desc = "Live grep", noremap = true, silent = true },
+		},
 		-- Grep word under cursor
-		{ "<leader>fw", "<cmd>lua require('fzf-lua').grep_cword()<CR>", map_opts },
+		{
+			"<leader>fw",
+			"<cmd>lua require('fzf-lua').grep_cword()<CR>",
+			{ desc = "Grep word under cursor", noremap = true, silent = true },
+		},
 		-- Grep visual selection
-		{ "<leader>fv", "<cmd>lua require('fzf-lua').grep_visual()<CR>", map_opts },
+		{
+			"<leader>fv",
+			"<cmd>lua require('fzf-lua').grep_visual()<CR>",
+			{ desc = "Grep visual selection", noremap = true, silent = true },
+		},
 		-- Git status
-		{ "<leader>gs", "<cmd>lua require('fzf-lua').git_status()<CR>", map_opts },
+		{
+			"<leader>gs",
+			"<cmd>lua require('fzf-lua').git_status()<CR>",
+			{ desc = "Git status", noremap = true, silent = true },
+		},
 		-- Git commits
-		{ "<leader>gc", "<cmd>lua require('fzf-lua').git_commits()<CR>", map_opts },
+		{
+			"<leader>gc",
+			"<cmd>lua require('fzf-lua').git_commits()<CR>",
+			{ desc = "Git commits", noremap = true, silent = true },
+		},
 		-- Git buffer commits
-		{ "<leader>gbc", "<cmd>lua require('fzf-lua').git_bcommits()<CR>", map_opts },
+		{
+			"<leader>gbc",
+			"<cmd>lua require('fzf-lua').git_bcommits()<CR>",
+			{ desc = "Git buffer commits", noremap = true, silent = true },
+		},
 		-- Git branches
-		{ "<leader>gb", "<cmd>lua require('fzf-lua').git_branches()<CR>", map_opts },
+		{
+			"<leader>gb",
+			"<cmd>lua require('fzf-lua').git_branches()<CR>",
+			{ desc = "Git branches", noremap = true, silent = true },
+		},
 		-- Neovim help
-		{ "<leader>h", "<cmd>lua require('fzf-lua').help_tags()<CR>", map_opts },
+		{
+			"<leader>h",
+			"<cmd>lua require('fzf-lua').help_tags()<CR>",
+			{ desc = "Neovim help tags", noremap = true, silent = true },
+		},
 		-- Man pages
-		{ "<leader>m", "<cmd>lua require('fzf-lua').man_pages()<CR>", map_opts },
+		{
+			"<leader>mm",
+			"<cmd>lua require('fzf-lua').man_pages()<CR>",
+			{ desc = "Man pages", noremap = true, silent = true },
+		},
 		-- Keymaps
-		{ "<leader>k", "<cmd>lua require('fzf-lua').keymaps()<CR>", map_opts },
+		{
+			"<leader>k",
+			"<cmd>lua require('fzf-lua').keymaps()<CR>",
+			{ desc = "Show keymaps", noremap = true, silent = true },
+		},
 		-- Neovim commands
-		{ "<leader>c", "<cmd>lua require('fzf-lua').commands()<CR>", map_opts },
+		{
+			"<leader>co",
+			"<cmd>lua require('fzf-lua').commands()<CR>",
+			{ desc = "Show commands", noremap = true, silent = true },
+		},
 		-- Command history
-		{ "<leader>ch", "<cmd>lua require('fzf-lua').command_history()<CR>", map_opts },
+		{
+			"<leader>ch",
+			"<cmd>lua require('fzf-lua').command_history()<CR>",
+			{ desc = "Command history", noremap = true, silent = true },
+		},
 		-- Search history
-		{ "<leader>sh", "<cmd>lua require('fzf-lua').search_history()<CR>", map_opts },
+		{
+			"<leader>sh",
+			"<cmd>lua require('fzf-lua').search_history()<CR>",
+			{ desc = "Search history", noremap = true, silent = true },
+		},
 		-- Marks
-		{ "<leader>ma", "<cmd>lua require('fzf-lua').marks()<CR>", map_opts },
+		{
+			"<leader>ma",
+			"<cmd>lua require('fzf-lua').marks()<CR>",
+			{ desc = "Show marks", noremap = true, silent = true },
+		},
 		-- Registers
-		{ "<leader>re", "<cmd>lua require('fzf-lua').registers()<CR>", map_opts },
+		{
+			"<leader>re",
+			"<cmd>lua require('fzf-lua').registers()<CR>",
+			{ desc = "Show registers", noremap = true, silent = true },
+		},
 	},
 	config = function()
 		local theme = require("config.theme")

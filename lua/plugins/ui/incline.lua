@@ -1,4 +1,5 @@
 local M
+
 M = {
 	"b0o/incline.nvim",
 	event = "BufReadPre",
@@ -18,7 +19,7 @@ M = {
 			},
 			render = function(props)
 				local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(props.buf), ":t")
-				local modified = vim.api.nvim_buf_get_option(props.buf, "modified") and " ●" or ""
+				local modified = vim.api.nvim_buf_get_option(props.buf, "modified") and "●" or ""
 				local filetype_icon, filetype_color = require("nvim-web-devicons").get_icon_color(filename)
 
 				local sizeForm = M.returnSize(props.buf)
@@ -29,7 +30,7 @@ M = {
 					{ filetype_icon, guifg = filetype_color, guibg = bg_color, gui = "bold" }, -- Added bold and larger font
 					{ " ", guibg = bg_color },
 					{
-						filename .. "" .. sizeForm,
+						filename .. " " .. sizeForm,
 						gui = props.focused and "bold" or "none",
 						guifg = theme.current_theme.incline.file_name.guifg,
 						guibg = bg_color,
@@ -69,7 +70,7 @@ M.returnSize = function(bufnr)
 	local filename = vim.api.nvim_buf_get_name(bufnr)
 	local fstat = uv.fs_stat(filename)
 	local fsize_value = tbl.tbl_get(fstat, "size")
-	print(fsize_value)
+
 	if type(fsize_value) ~= "number" or fsize_value <= 0 then
 		return ""
 	end

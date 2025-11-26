@@ -9,6 +9,7 @@ local dash = load_plugin("dash")
 local bufferline = load_plugin("bufferline")
 local icons = load_plugin("icons")
 local crates = load_plugin("crates")
+local incline = load_plugin("incline")
 
 return {
 	nvim_tree,
@@ -18,4 +19,5 @@ return {
 	bufferline,
 	icons,
 	crates,
+	incline,
 }

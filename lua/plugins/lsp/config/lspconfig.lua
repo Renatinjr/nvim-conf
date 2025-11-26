@@ -37,5 +37,41 @@ return {
 				},
 			},
 		})
+
+		lspconfig.gopls.setup({
+			capabilities = capabilities,
+			settings = {
+				gopls = {
+					analyses = {
+						unusedparams = true,
+						shadow = true,
+					},
+					staticcheck = true,
+					gofumpt = true,
+					hints = {
+						assignVariableTypes = true,
+						compositeLiteralFields = true,
+						constantValues = true,
+						functionTypeParameters = true,
+						parameterNames = true,
+						rangeVariableTypes = true,
+					},
+					-- Add more settings as needed
+				},
+			},
+			flags = {
+				debounce_text_changes = 150,
+			},
+		})
+
+		lspconfig.elixirls.setup({
+			cmd = { "/home/renatojr/.local/share/nvim/mason/packages/elixir-ls/language_server.sh" },
+			settings = {
+				dialyzerEnabled = true,
+				fetchDeps = false,
+				enableTestLenses = false,
+				suggestSpecs = false,
+			},
+		})
 	end,
 }
