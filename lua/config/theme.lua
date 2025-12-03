@@ -1901,7 +1901,7 @@ local M = {}
 -- end
 
 local kanso = function()
-	local colors = require("kanso.colors").setup({ theme = "zen" })
+	local colors = require("kanso.colors").setup({ theme = "ink" })
 	return {
 		bg = colors.background,
 		bg_sec = colors.background_dark,

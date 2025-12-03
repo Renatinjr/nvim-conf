@@ -6,8 +6,18 @@ return {
 		config = function()
 			require("kanso").setup({
 				style = "dark", -- "dark" or "light"
-				transparent = false,
-				terminal_colors = true,
+				bold = true, -- enable bold fonts
+				italics = true, -- enable italics
+				compile = true, -- enable compiling the colorscheme
+				undercurl = true, -- enable undercurls
+				commentStyle = { italic = true },
+				functionStyle = {},
+				keywordStyle = { italic = true },
+				statementStyle = {},
+				typeStyle = {},
+				transparent = false, -- do not set background color
+				dimInactive = false, -- dim inactive window `:h hl-NormalNC`
+				terminalColors = true, -- define vim.g.terminal_color_{0,17}
 
 				overrides = function(colors)
 					local gutter_bg = "#090e13"
@@ -88,9 +98,6 @@ return {
 							fg = "#7FB4CA",
 						},
 						FzfLuaPointer = { fg = colors.palette.carpYellow },
-						NvimTreeNormal = { bg = "#0A0E14" },
-						NvimTreeEndOfBuffer = { bg = "#0A0E14" },
-						NvimTreeNormalNC = { bg = "#0A0E14" },
 						NvimTreeVertSplit = { bg = "#0A0E14", fg = "#0A0E14" },
 						NvimTreeWinSeparator = { bg = "#0A0E14", fg = "#0A0E14" },
 						Normal = { bg = custom_bg },
@@ -123,11 +130,17 @@ return {
 
 				colors = {
 					palette = {
-						fg = "#dcd7ba",
+						fg = "#e0cfa4",
+						bg = "#0a0e14",
 					},
+					theme = { zen = {}, pearl = {}, ink = {}, all = {} },
 				},
 			})
 
+			vim.api.nvim_set_hl(0, "NvimTreeOpenedFolderIcon", { fg = "#64748b" }) -- Sets opened folder icon to red
+			vim.api.nvim_set_hl(0, "NvimTreeClosedFolderIcon", { fg = "#64748b" }) -- Sets closed folder icon to green
+			vim.api.nvim_set_hl(0, "NvimTreeFolderArrowClosed", { fg = "#64748b" }) -- Red arrow when closed
+			vim.api.nvim_set_hl(0, "NvimTreeFolderArrowOpen", { fg = "#64748b" }) -- Green arrow when open
 			vim.cmd("colorscheme kanso-zen")
 			vim.opt.background = "dark"
 			-- vim.api.nvim_set_hl(0, "WinSeparator", { fg = "#1F1F28" })

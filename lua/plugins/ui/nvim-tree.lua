@@ -93,8 +93,8 @@ return {
 						default = "󰈮",
 						symlink = "",
 						folder = {
-							arrow_closed = "",
-							arrow_open = "",
+							arrow_closed = "ᐅ",
+							arrow_open = "▼",
 							default = "",
 							open = "",
 							empty = "",

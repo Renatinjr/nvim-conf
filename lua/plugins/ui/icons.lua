@@ -78,7 +78,7 @@ return {
 					},
 				},
 			})
-			require("nvim-web-devicons").set_default_icon("", "#5e5c5c", 65)
+			require("nvim-web-devicons").set_default_icon("*", "#5e5c5c", 65)
 		end,
 	},
 }

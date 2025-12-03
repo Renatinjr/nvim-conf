@@ -73,7 +73,7 @@ local ModeNames = {
 }
 
 local ModeHighlights = {
-	NORMAL = { fg = "normal_fg1", bg = "normal_bg1", bold = true },
+	NORMAL = { fg = "normal_fg4", bg = "#3e404a", bold = true },
 	["O-PENDING"] = { fg = "normal_fg1", bg = "normal_bg1", bold = true },
 	INSERT = { fg = "insert_fg", bg = "insert_bg", bold = true },
 	VISUAL = { fg = "visual_fg", bg = "visual_bg", bold = true },

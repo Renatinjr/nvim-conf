@@ -1,8 +1,8 @@
 vim.opt.tabstop = 2
 vim.opt.cursorline = true
 vim.opt.termguicolors = true
-vim.opt.signcolumn = "yes:1"
-vim.opt.statuscolumn = "%=%{v:relnum?v:relnum:v:lnum} %s" -- Example with relative line numbers
+-- vim.opt.signcolumn = "yes:1"
+-- vim.opt.statuscolumn = "%=%{v:relnum?v:relnum:v:lnum} %s" -- Example with relative line numbers
 
 local signs = { Error = "󰅙 ", Warn = " ", Hint = "💡", Info = " " }
 local theme = require("config.theme")
