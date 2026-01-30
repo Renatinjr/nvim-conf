@@ -12,6 +12,7 @@ local blink = load_plugin("blinkcmp")
 local noice = load_plugin("noice")
 local tmux_navigator = load_plugin("tmux-navigator")
 local ts_error = load_plugin("ts-error")
+local claudecode = load_plugin("claudecode")
 
 return {
 	coding,
@@ -24,4 +25,5 @@ return {
 	noice,
 	tmux_navigator,
 	ts_error,
+	claudecode,
 }

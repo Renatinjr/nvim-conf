@@ -10,42 +10,27 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
 	end,
 })
 
--- Set highlight on search
 vim.o.hlsearch = false
-
--- Make line numbers default
 vim.wo.number = true
 
--- Tabs vs spaces
-vim.o.tabstop = 2 -- A TAB character looks like 4 spaces
-vim.o.expandtab = true -- Pressing the TAB key will insert spaces instead of a TAB character
-vim.o.softtabstop = 2 -- Number of spaces inserted instead of a TAB character
-vim.o.shiftwidth = 2 -- Number of spaces inserted when indenting
+vim.o.tabstop = 2
+vim.o.expandtab = true
+vim.o.softtabstop = 2
+vim.o.shiftwidth = 2
 
--- Enable mouse mode
 vim.o.mouse = "a"
-
--- Enable break indent
 vim.o.breakindent = true
-
--- Save undo history
 vim.o.undofile = true
 
--- Case-insensitive searching UNLESS \C or capital in search
 vim.o.ignorecase = true
 vim.o.smartcase = true
 
--- Decrease update time
 vim.o.updatetime = 250
 vim.o.timeoutlen = 300
 
--- Set completeopt to have a better completion experience
 vim.o.completeopt = "menuone,noselect"
-
--- Set terminal gui colors to true
 vim.o.termguicolors = true
 
--- Fill Chars
 vim.opt.fillchars = { eob = " " }
 vim.opt.number = true
 vim.opt.relativenumber = true

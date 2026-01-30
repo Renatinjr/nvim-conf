@@ -130,7 +130,7 @@ return {
 
 				colors = {
 					palette = {
-						fg = "#e0cfa4",
+						fg = "#dcd7ba",
 						bg = "#0a0e14",
 					},
 					theme = { zen = {}, pearl = {}, ink = {}, all = {} },
@@ -144,6 +144,176 @@ return {
 			vim.cmd("colorscheme kanso-zen")
 			vim.opt.background = "dark"
 			-- vim.api.nvim_set_hl(0, "WinSeparator", { fg = "#1F1F28" })
+		end,
+	},
+
+	{
+		"rose-pine/neovim",
+		name = "rose-pine",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			require("rose-pine").setup({
+				variant = "main", -- "main", "moon", or "dawn"
+				dark_variant = "main", -- "main", "moon"
+				light_variant = "dawn",
+				dim_inactive_windows = false,
+				extend_background_behind_borders = false,
+
+				styles = {
+					bold = true,
+					italic = true,
+					transparency = false,
+				},
+
+				groups = {
+					border = "muted",
+					comment = "muted",
+					link = "iris",
+					punctuation = "subtle",
+
+					error = "love",
+					hint = "iris",
+					info = "foam",
+					warn = "gold",
+
+					headings = {
+						h1 = "iris",
+						h2 = "foam",
+						h3 = "rose",
+						h4 = "gold",
+						h5 = "pine",
+						h6 = "foam",
+					},
+				},
+
+				highlight_groups = {
+					-- Custom background colors
+					ColorColumn = { bg = "surface" },
+					CursorLine = { bg = "surface" },
+					CursorLineNr = { fg = "text", bg = "base" },
+
+					-- Gutter customizations
+					SignColumn = { bg = "#0a0912" },
+					LineNr = { bg = "#0a0912", fg = "muted" },
+					FoldColumn = { bg = "#0a0912", fg = "muted" },
+
+					-- CMP customizations
+					CmpItemMenu = { fg = "text" },
+					CmpItemMenuSelection = { bg = "highlight_med", fg = "iris", bold = true },
+					CmpItemMenuBorder = { fg = "overlay", bg = "base" },
+
+					-- CMP Kind Colors (Rose Pine palette)
+					CmpItemKind = { fg = "gold" },
+					CmpItemKindText = { fg = "text" },
+					CmpItemKindFunction = { fg = "foam" },
+					CmpItemKindVariable = { fg = "love" },
+					CmpItemKindClass = { fg = "gold" },
+					CmpItemKindInterface = { fg = "iris" },
+					CmpItemKindModule = { fg = "foam" },
+					CmpItemKindProperty = { fg = "pine" },
+					CmpItemKindKeyword = { fg = "love" },
+					CmpItemKindSnippet = { fg = "rose" },
+
+					-- Tree customizations
+					NvimTreeWinSeparator = { bg = "#0f0d1a", fg = "#0f0d1a" },
+					NvimTreeNormal = { bg = "#0f0d1a" },
+					NvimTreeNormalNC = { bg = "#0f0d1a" },
+
+					-- Background customizations
+					Normal = { bg = "#0f0d1a" },
+					NormalFloat = { bg = "#0f0d1a" },
+					NormalNC = { bg = "#0f0d1a" },
+					FloatBorder = { bg = "#0f0d1a", fg = "#0f0d1a" },
+
+					-- WinSeparator customization
+					WinSeparator = { fg = "overlay", bg = "#0f0d1a" },
+
+					-- Telescope customizations
+					TelescopeBorder = { fg = "overlay", bg = "#0f0d1a" },
+					TelescopeNormal = { bg = "#0f0d1a" },
+					TelescopePreviewBorder = { fg = "overlay", bg = "#0f0d1a" },
+					TelescopePreviewNormal = { bg = "#0f0d1a" },
+					TelescopePreviewTitle = { fg = "text", bg = "#0f0d1a" },
+					TelescopePromptBorder = { fg = "overlay", bg = "#0f0d1a" },
+					TelescopePromptNormal = { bg = "#0f0d1a" },
+					TelescopePromptTitle = { fg = "text", bg = "#0f0d1a" },
+					TelescopeResultsBorder = { fg = "overlay", bg = "#0f0d1a" },
+					TelescopeResultsNormal = { bg = "#0f0d1a" },
+					TelescopeResultsTitle = { fg = "text", bg = "#0f0d1a" },
+
+					-- Diagnostic customizations
+					DiagnosticVirtualTextError = { bg = "none" },
+					DiagnosticVirtualTextWarn = { bg = "none" },
+					DiagnosticVirtualTextInfo = { bg = "none" },
+					DiagnosticVirtualTextHint = { bg = "none" },
+
+					-- Indent blankline
+					IndentBlanklineChar = { fg = "overlay" },
+					IndentBlanklineContextChar = { fg = "subtle" },
+
+					-- WhichKey
+					WhichKeyFloat = { bg = "#0f0d1a" },
+
+					-- LSP Signature
+					LspSignatureActiveParameter = { bg = "surface", fg = "gold" },
+				},
+
+				-- Before/After hooks for further customization
+				before_highlight = function(group, highlight, palette)
+					-- Disable all undercurl
+					if highlight.undercurl then
+						highlight.undercurl = false
+					end
+
+					-- Customize specific groups
+					if group == "Comment" then
+						highlight.italic = true
+					end
+
+					if group:match("^Diagnostic") then
+						highlight.underline = false
+					end
+				end,
+			})
+
+			-- Set the colorscheme
+			-- vim.cmd("colorscheme rose-pine")
+
+			-- Custom folder icon colors
+			vim.api.nvim_set_hl(0, "NvimTreeOpenedFolderIcon", { fg = "#9ccfd8" })
+			vim.api.nvim_set_hl(0, "NvimTreeClosedFolderIcon", { fg = "#9ccfd8" })
+			vim.api.nvim_set_hl(0, "NvimTreeFolderArrowClosed", { fg = "#9ccfd8" })
+			vim.api.nvim_set_hl(0, "NvimTreeFolderArrowOpen", { fg = "#9ccfd8" })
+			vim.api.nvim_set_hl(0, "NvimTreeFolderIcon", { fg = "#9ccfd8" })
+
+			-- Additional customizations
+			vim.api.nvim_set_hl(0, "NvimTreeIndentMarker", { fg = "#26233a" })
+			vim.api.nvim_set_hl(0, "NvimTreeRootFolder", { fg = "#ebbcba", bold = true })
+
+			-- Set custom background for terminal buffers
+			vim.api.nvim_set_hl(0, "Terminal", { bg = "#0f0d1a" })
+			vim.api.nvim_set_hl(0, "TerminalBorder", { bg = "#0f0d1a", fg = "#0f0d1a" })
+
+			-- Git signs customization
+			vim.api.nvim_set_hl(0, "GitSignsAdd", { fg = "#9ccfd8", bg = "#0a0912" })
+			vim.api.nvim_set_hl(0, "GitSignsChange", { fg = "#f6c177", bg = "#0a0912" })
+			vim.api.nvim_set_hl(0, "GitSignsDelete", { fg = "#eb6f92", bg = "#0a0912" })
+
+			-- Bufferline customizations (if using bufferline.nvim)
+			vim.api.nvim_set_hl(0, "BufferLineBackground", { bg = "#0a0912", fg = "#6e6a86" })
+			vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { bg = "#0f0d1a", fg = "#e0def4", bold = true })
+			vim.api.nvim_set_hl(0, "BufferLineSeparatorSelected", { bg = "#0f0d1a", fg = "#0f0d1a" })
+			vim.api.nvim_set_hl(0, "BufferLineSeparator", { bg = "#0a0912", fg = "#0a0912" })
+
+			-- Status line customizations
+			vim.api.nvim_set_hl(0, "StatusLine", { bg = "#0a0912", fg = "#908caa" })
+			vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "#0a0912", fg = "#6e6a86" })
+
+			-- Tab line customizations
+			vim.api.nvim_set_hl(0, "TabLine", { bg = "#0a0912", fg = "#6e6a86" })
+			vim.api.nvim_set_hl(0, "TabLineSel", { bg = "#0f0d1a", fg = "#e0def4", bold = true })
+			vim.api.nvim_set_hl(0, "TabLineFill", { bg = "#0a0912" })
 		end,
 	},
 }

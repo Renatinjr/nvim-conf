@@ -2,6 +2,7 @@ local M
 M = {
 	"folke/which-key.nvim",
 	event = "VeryLazy",
+	dependencies = { "nvim-treesitter/nvim-treesitter-textobjects" },
 	config = function()
 		local wk = require("which-key")
 		wk.setup({

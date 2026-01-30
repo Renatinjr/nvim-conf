@@ -10,7 +10,7 @@ function M:Lazy()
 			"clone",
 			"--filter=blob:none",
 			"https://github.com/folke/lazy.nvim.git",
-			"--branch=stable", 
+			"--branch=stable",
 			lazypath,
 		})
 	end

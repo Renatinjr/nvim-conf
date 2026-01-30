@@ -1,122 +1,154 @@
 return {
-	"nvim-treesitter/nvim-treesitter",
-	build = ":TSUpdate",
-	event = { "BufReadPost", "BufNewFile" },
-	dependencies = {
-		"nvim-treesitter/nvim-treesitter-textobjects",
-	},
-	config = function()
-		require("nvim-treesitter.configs").setup({
-			-- Install parsers for these languages
+	{
+		"nvim-treesitter/nvim-treesitter",
+		build = ":TSUpdate",
+		event = { "BufReadPost", "BufNewFile" },
+		cmd = { "TSInstall", "TSUpdate", "TSUpdateSync" },
+		dependencies = {
+			{
+				"nvim-treesitter/nvim-treesitter-textobjects",
+				lazy = true,
+          branch = "main"
+			},
+		},
+		opts = {
 			ensure_installed = {
-				"typescript",
-				"javascript",
-				"tsx",
-				"rust",
-				"go",
-				"lua",
-				"vim",
-				"vimdoc",
-				"html",
+				"bash",
+				"c",
 				"css",
+				"dockerfile",
+				"gitcommit",
+				"gitignore",
+				"go",
+				"gomod",
+				"gosum",
+				"html",
+				"javascript",
+				"jsdoc",
 				"json",
+				"jsonc",
+				"lua",
+				"luadoc",
+				"luap",
 				"markdown",
 				"markdown_inline",
-				"bash",
+				"python",
+				"query",
+				"regex",
+				"rust",
+				"toml",
+				"tsx",
+				"typescript",
+				"vim",
+				"vimdoc",
+				"yaml",
 			},
-
-			-- Install parsers synchronously (only applied to `ensure_installed`)
-			sync_install = false,
-
-			-- Automatically install missing parsers when entering buffer
 			auto_install = true,
-
-			-- Highlighting configuration
 			highlight = {
 				enable = true,
-				disable = function(lang, buf)
-					local max_filesize = 800 * 1024 -- 800 KB
-					local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-					if ok and stats and stats.size > max_filesize then
-						return true
-					end
-				end,
-				additional_vim_regex_highlighting = true,
+				additional_vim_regex_highlighting = false,
 			},
-
-			-- Indentation based on treesitter
 			indent = {
 				enable = true,
-				-- Disable for languages where it might cause issues
-				disable = { "python" },
 			},
-
-			-- Incremental selection
 			incremental_selection = {
 				enable = true,
 				keymaps = {
 					init_selection = "<C-space>",
 					node_incremental = "<C-space>",
-					scope_incremental = "<C-s>",
-					node_decremental = "<C-backspace>",
+					scope_incremental = false,
+					node_decremental = "<bs>",
 				},
 			},
-
-			-- Textobjects configuration
 			textobjects = {
 				select = {
 					enable = true,
-					lookahead = true, -- Automatically jump forward to textobj
+					lookahead = true,
 					keymaps = {
-						-- You can use the capture groups defined in textobjects.scm
-						["af"] = "@function.outer",
-						["if"] = "@function.inner",
-						["ac"] = "@class.outer",
-						["ic"] = "@class.inner",
-						["aa"] = "@parameter.outer",
-						["ia"] = "@parameter.inner",
+						["af"] = { query = "@function.outer", desc = "Select outer function" },
+						["if"] = { query = "@function.inner", desc = "Select inner function" },
+						["ac"] = { query = "@class.outer", desc = "Select outer class" },
+						["ic"] = { query = "@class.inner", desc = "Select inner class" },
+						["aa"] = { query = "@parameter.outer", desc = "Select outer argument" },
+						["ia"] = { query = "@parameter.inner", desc = "Select inner argument" },
+						["ai"] = { query = "@conditional.outer", desc = "Select outer conditional" },
+						["ii"] = { query = "@conditional.inner", desc = "Select inner conditional" },
+						["al"] = { query = "@loop.outer", desc = "Select outer loop" },
+						["il"] = { query = "@loop.inner", desc = "Select inner loop" },
+						["ab"] = { query = "@block.outer", desc = "Select outer block" },
+						["ib"] = { query = "@block.inner", desc = "Select inner block" },
 					},
 				},
 				move = {
 					enable = true,
-					set_jumps = true, -- Add jumps to the jumplist
+					set_jumps = true,
 					goto_next_start = {
-						["]m"] = "@function.outer",
-						["]]"] = "@class.outer",
+						["]f"] = { query = "@function.outer", desc = "Next function start" },
+						["]c"] = { query = "@class.outer", desc = "Next class start" },
+						["]a"] = { query = "@parameter.inner", desc = "Next argument start" },
 					},
 					goto_next_end = {
-						["]M"] = "@function.outer",
-						["]["] = "@class.outer",
+						["]F"] = { query = "@function.outer", desc = "Next function end" },
+						["]C"] = { query = "@class.outer", desc = "Next class end" },
+						["]A"] = { query = "@parameter.inner", desc = "Next argument end" },
 					},
 					goto_previous_start = {
-						["[m"] = "@function.outer",
-						["[["] = "@class.outer",
+						["[f"] = { query = "@function.outer", desc = "Previous function start" },
+						["[c"] = { query = "@class.outer", desc = "Previous class start" },
+						["[a"] = { query = "@parameter.inner", desc = "Previous argument start" },
 					},
 					goto_previous_end = {
-						["[M"] = "@function.outer",
-						["[]"] = "@class.outer",
+						["[F"] = { query = "@function.outer", desc = "Previous function end" },
+						["[C"] = { query = "@class.outer", desc = "Previous class end" },
+						["[A"] = { query = "@parameter.inner", desc = "Previous argument end" },
 					},
 				},
 				swap = {
 					enable = true,
 					swap_next = {
-						["<leader>a"] = "@parameter.inner",
+						["<leader>sa"] = { query = "@parameter.inner", desc = "Swap with next argument" },
+						["<leader>sf"] = { query = "@function.outer", desc = "Swap with next function" },
 					},
 					swap_previous = {
-						["<leader>A"] = "@parameter.inner",
+						["<leader>sA"] = { query = "@parameter.inner", desc = "Swap with previous argument" },
+						["<leader>sF"] = { query = "@function.outer", desc = "Swap with previous function" },
 					},
 				},
 			},
+		},
+		config = function(_, opts)
+			require('nvim-treesitter-textobjects').setup(opts)
 
-			-- Enable folding based on treesitter
-			fold = {
-				enable = true,
+			-- Folding with treesitter
+			vim.opt.foldmethod = "expr"
+			vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+			vim.opt.foldenable = false -- Start with folds open
+		end,
+	},
+	{
+		"nvim-treesitter/nvim-treesitter-context",
+		event = { "BufReadPost", "BufNewFile" },
+		dependencies = { "nvim-treesitter/nvim-treesitter" },
+		opts = {
+			enable = true,
+			max_lines = 3,
+			min_window_height = 0,
+			line_numbers = true,
+			multiline_threshold = 20,
+			trim_scope = "outer",
+			mode = "cursor",
+			separator = nil,
+			zindex = 20,
+		},
+		keys = {
+			{
+				"[x",
+				function()
+					require("treesitter-context").go_to_context(vim.v.count1)
+				end,
+				desc = "Go to context",
+				silent = true,
 			},
-		})
-
-		-- Enable treesitter folding
-		vim.opt.foldmethod = "expr"
-		vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-		vim.opt.foldenable = false -- Don't fold by default
-	end,
+		},
+	},
 }

@@ -55,9 +55,10 @@ local settings = {
 	complete_function_calls = true,
 	typescript = {
 		preferences = {
-			includePackageJsonAutoImports = "auto",
+			includePackageJsonAutoImports = "on",
 			importModuleSpecifier = "relative",
 			importModuleSpecifierEnding = "minimal",
+			includeCompletionsWithSnippetText = true,
 		},
 		implementAbstractClasses = "auto",
 		suggest = {
@@ -78,7 +79,7 @@ local settings = {
 		},
 		updateImportsOnFileMove = { enabled = "always" },
 		tsserver = {
-			maxTsServerMemory = vim.fn.has("macunix") == 1 and 8192 or 16384,
+			maxTsServerMemory = 2080,
 			useBatchedBufferSync = true,
 		},
 		referencesCodeLens = {
@@ -91,9 +92,10 @@ local settings = {
 	},
 	javascript = {
 		preferences = {
-			includePackageJsonAutoImports = "auto",
+			includePackageJsonAutoImports = "on",
 			importModuleSpecifier = "relative",
 			importModuleSpecifierEnding = "minimal",
+			includeCompletionsWithSnippetText = true,
 		},
 		suggest = {
 			completeFunctionCalls = true,
@@ -110,6 +112,10 @@ local settings = {
 			includeInlayFunctionLikeReturnTypeHints = true,
 		},
 		updateImportsOnFileMove = { enabled = "always" },
+		tsserver = {
+			maxTsServerMemory = 2080,
+			useBatchedBufferSync = true,
+		},
 	},
 	vtsls = {
 		enableMoveToFileCodeAction = true,
@@ -117,6 +123,7 @@ local settings = {
 		experimental = {
 			completion = {
 				enableServerSideFuzzyMatch = true,
+				completeUnimported = true,
 			},
 		},
 		codeLens = {
@@ -130,25 +137,6 @@ local settings = {
 local on_attach = function(client, bufnr)
 	-- Enable omnifunc
 	vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
-
-	-- Create augroup for buffer-local autocommands
-	local augroup = vim.api.nvim_create_augroup("VtsLsBuffer" .. bufnr, { clear = true })
-
-	-- Format on save if enabled
-	-- vim.api.nvim_create_autocmd("BufWritePre", {
-	-- 	group = augroup,
-	-- 	buffer = bufnr,
-	-- 	callback = function()
-	-- 		if vim.g.auto_format_enabled ~= false then
-	-- 			vim.lsp.buf.format({
-	-- 				async = false,
-	-- 				filter = function(format_client)
-	-- 					return format_client.name == "vtsls"
-	-- 				end,
-	-- 			})
-	-- 		end
-	-- 	end,
-	-- })
 
 	-- Enhanced move to file refactoring command
 	client.commands["_typescript.moveToFileRefactoring"] = function(command, ctx)
@@ -262,9 +250,14 @@ local M = {
 	},
 	root_dir = function(fname)
 		local util = require("lspconfig.util")
-		return util.root_pattern("tsconfig.json", "jsconfig.json", "package.json", ".git")(fname)
-			or util.find_git_ancestor(fname)
-			or util.path.dirname(fname)
+		local root = util.root_pattern("tsconfig.json", "jsconfig.json", "package.json", ".git", "node_modules")(fname)
+
+		if not root then
+			root = util.find_package_json_ancestor(fname)
+		end
+
+		print(util.path.dirname(fname))
+		return root
 	end,
 	single_file_support = true,
 	capabilities = vim.tbl_deep_extend(
@@ -279,6 +272,12 @@ local M = {
 	handlers = handlers,
 	on_attach = on_attach,
 	settings = settings,
+	workspace_folders = {
+		{
+			name = "workspace",
+			uri = vim.uri_from_fname(vim.fn.getcwd()),
+		},
+	},
 }
 
 return {
@@ -318,6 +317,39 @@ return {
 						scope = "cursor",
 					})
 				end
+			end,
+		})
+		vim.api.nvim_create_user_command("TypeScriptReloadProjects", function()
+			local clients = vim.lsp.get_active_clients({ name = "vtsls" })
+			for _, client in ipairs(clients) do
+				if client.supports_method("workspace/executeCommand") then
+					client.request("workspace/executeCommand", {
+						command = "typescript.reloadProjects",
+						arguments = {},
+					}, function(err, result)
+						if err then
+							vim.notify("Failed to reload projects: " .. tostring(err), vim.log.levels.ERROR)
+						else
+							vim.notify("TypeScript projects reloaded", vim.log.levels.INFO)
+						end
+					end)
+				end
+			end
+		end, {})
+
+		-- Auto-initialize project when opening TypeScript/JavaScript files
+		vim.api.nvim_create_autocmd("FileType", {
+			pattern = { "javascript", "typescript", "javascriptreact", "typescriptreact" },
+			callback = function(args)
+				local bufnr = args.buf
+				vim.defer_fn(function()
+					-- Try to trigger auto-import discovery
+					vim.lsp.buf_request(bufnr, "textDocument/completion", {
+						textDocument = { uri = vim.uri_from_bufnr(bufnr) },
+						position = { line = 0, character = 0 },
+						context = { triggerKind = 1 }, -- Invoked
+					}, function() end)
+				end, 2000) -- Wait 2 seconds for project to load
 			end,
 		})
 	end,

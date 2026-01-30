@@ -65,15 +65,25 @@ M = {
 }
 
 M.returnSize = function(bufnr)
-	local uv = require("commons.uv")
-	local tbl = require("commons.tbl")
+	local uv = vim.loop
 	local filename = vim.api.nvim_buf_get_name(bufnr)
+
+	if not filename or filename == "" then
+		return ""
+	end
+
 	local fstat = uv.fs_stat(filename)
-	local fsize_value = tbl.tbl_get(fstat, "size")
+
+	if not fstat or not fstat.size then
+		return ""
+	end
+
+	local fsize_value = fstat.size
 
 	if type(fsize_value) ~= "number" or fsize_value <= 0 then
 		return ""
 	end
+
 	local suffixes = { "B", "KB", "MB", "GB" }
 	local i = 1
 	while fsize_value > 1024 and i < #suffixes do

@@ -2223,13 +2223,183 @@ local kanso = function()
 	}
 end
 
+-- local kanagawa = function()
+-- 	local colors = require("kanagawa.colors").setup()
+-- 	local palette = colors.palette
+--
+-- 	-- Custom background colors
+-- 	local custom_bg = "#0A0E14"
+-- 	local gutter_bg = "#090e13"
+-- 	local background_dark = palette.sumiInk1 or "#16161D"
+-- 	local background_light = palette.sumiInk2 or "#1F1F28"
+--
+-- 	return {
+-- 		bg = custom_bg,
+-- 		bg_sec = background_dark,
+-- 		bg_notify = custom_bg,
+-- 		text = palette.fujiWhite or "#DCD7BA",
+-- 		text_sec = palette.oldWhite or "#727169",
+-- 		inlay_hint_bg = background_dark,
+-- 		inlay_hint_fg = "#818890",
+-- 		fzf = {
+-- 			setup_colors = function()
+-- 				local fzf_colors = {
+-- 					bg = custom_bg,
+-- 					fg = palette.fujiWhite or "#DCD7BA",
+-- 					border = palette.sumiInk3 or "#363646",
+-- 					cursor_line_bg = background_dark,
+-- 					blue = palette.crystalBlue or "#7E9CD8",
+-- 					light_blue = palette.waveAqua1 or "#7FB4CA",
+-- 					purple = palette.oniViolet or "#957FB8",
+-- 					red = palette.peachRed or "#E46876",
+-- 					green = palette.springGreen or "#98BB6C",
+-- 					orange = palette.autumnYellow or "#FF9E3B",
+-- 					comment = palette.oldWhite or "#727169",
+-- 				}
+--
+-- 				local highlights = {
+-- 					FzfLuaNormal = { bg = fzf_colors.bg, fg = fzf_colors.fg },
+-- 					FzfLuaBorder = { fg = palette.fujiGray or "#a4a7a4" },
+-- 					FzfLuaCursorLine = { bg = fzf_colors.cursor_line_bg, fg = fzf_colors.purple },
+-- 					FzfLuaTitle = { fg = fzf_colors.blue, bold = true },
+-- 					FzfLuaPrompt = { fg = fzf_colors.purple, bold = true },
+-- 					FzfLuaPointer = { fg = palette.autumnYellow or "#FF9E3B", bold = true }, -- Using autumnYellow instead of purple
+-- 					FzfLuaMarker = { fg = fzf_colors.green },
+-- 					FzfLuaSpinner = { fg = fzf_colors.purple, bold = true },
+-- 					FzfLuaHeader = { fg = fzf_colors.comment },
+-- 					FzfLuaPreviewTitle = { fg = fzf_colors.purple, bold = true },
+-- 				}
+--
+-- 				for group, opts in pairs(highlights) do
+-- 					vim.api.nvim_set_hl(0, group, opts)
+-- 				end
+--
+-- 				return {
+-- 					normal = "FzfLuaNormal",
+-- 					border = "FzfLuaBorder",
+-- 					cursor = "FzfLuaPointer",
+-- 					cursorline = "FzfLuaCursorLine",
+-- 					title = "FzfLuaTitle",
+-- 					prompt = "FzfLuaPrompt",
+-- 					pointer = "FzfLuaPointer",
+-- 					marker = "FzfLuaMarker",
+-- 					spinner = "FzfLuaSpinner",
+-- 					header = "FzfLuaHeader",
+-- 					preview_title = "FzfLuaPreviewTitle",
+-- 					help_normal = "FzfLuaNormal",
+-- 					help_border = "FzfLuaBorder",
+-- 				}
+-- 			end,
+-- 		},
+-- 		alpha = {
+-- 			heading = palette.autumnYellow or "#FF9E3B",
+-- 			button = palette.oniViolet or "#957FB8",
+-- 			shortcut = palette.crystalBlue or "#7E9CD8",
+-- 		},
+-- 		incline = {
+-- 			normal = { bg = background_light, fg = palette.fujiWhite or "#DCD7BA" },
+-- 			border = { bg = custom_bg, fg = custom_bg },
+-- 			normal_nc = { bg = background_light, fg = palette.oldWhite or "#727169" },
+-- 			focused = { one = background_light, two = background_light },
+-- 			file_name = { guifg = palette.fujiWhite or "#DCD7BA" },
+-- 			modified = { guifg = palette.autumnYellow or "#FF9E3B" },
+-- 		},
+-- 		bufferline = {},
+-- 	}
+-- end
+
+local rose_pine = function()
+	local colors = require("rose-pine.palette")
+	local palette = colors
+
+	-- Custom background colors
+	local custom_bg = palette.dark_bg or "#0f0d1a"
+	local gutter_bg = palette.darker_bg or "#0a0912"
+	local background_dark = palette.base or "#191724"
+	local background_light = palette.surface or "#1f1d2e"
+
+	return {
+		bg = custom_bg,
+		bg_sec = background_dark,
+		bg_notify = custom_bg,
+		text = palette.text or "#e0def4",
+		text_sec = palette.muted or "#6e6a86",
+		inlay_hint_bg = background_dark,
+		inlay_hint_fg = palette.overlay or "#26233a",
+		fzf = {
+			setup_colors = function()
+				local fzf_colors = {
+					bg = custom_bg,
+					fg = palette.text or "#e0def4",
+					border = palette.overlay or "#26233a",
+					cursor_line_bg = background_dark,
+					blue = palette.pine or "#31748f",
+					light_blue = palette.foam or "#9ccfd8",
+					purple = palette.iris or "#c4a7e7",
+					red = palette.love or "#eb6f92",
+					green = palette.pine or "#31748f", -- Rose Pine doesn't have a distinct green, using pine
+					orange = palette.gold or "#f6c177",
+					comment = palette.muted or "#6e6a86",
+				}
+
+				local highlights = {
+					FzfLuaNormal = { bg = fzf_colors.bg, fg = fzf_colors.fg },
+					FzfLuaBorder = { fg = palette.subtle or "#908caa" },
+					FzfLuaCursorLine = { bg = fzf_colors.cursor_line_bg, fg = fzf_colors.purple },
+					FzfLuaTitle = { fg = fzf_colors.blue, bold = true },
+					FzfLuaPrompt = { fg = fzf_colors.purple, bold = true },
+					FzfLuaPointer = { fg = fzf_colors.orange, bold = true },
+					FzfLuaMarker = { fg = fzf_colors.green },
+					FzfLuaSpinner = { fg = fzf_colors.purple, bold = true },
+					FzfLuaHeader = { fg = fzf_colors.comment },
+					FzfLuaPreviewTitle = { fg = fzf_colors.purple, bold = true },
+				}
+
+				for group, opts in pairs(highlights) do
+					vim.api.nvim_set_hl(0, group, opts)
+				end
+
+				return {
+					normal = "FzfLuaNormal",
+					border = "FzfLuaBorder",
+					cursor = "FzfLuaPointer",
+					cursorline = "FzfLuaCursorLine",
+					title = "FzfLuaTitle",
+					prompt = "FzfLuaPrompt",
+					pointer = "FzfLuaPointer",
+					marker = "FzfLuaMarker",
+					spinner = "FzfLuaSpinner",
+					header = "FzfLuaHeader",
+					preview_title = "FzfLuaPreviewTitle",
+					help_normal = "FzfLuaNormal",
+					help_border = "FzfLuaBorder",
+				}
+			end,
+		},
+		alpha = {
+			heading = palette.gold or "#f6c177",
+			button = palette.iris or "#c4a7e7",
+			shortcut = palette.pine or "#31748f",
+		},
+		incline = {
+			normal = { bg = background_light, fg = palette.text or "#e0def4" },
+			border = { bg = custom_bg, fg = custom_bg },
+			normal_nc = { bg = background_light, fg = palette.muted or "#6e6a86" },
+			focused = { one = background_light, two = background_light },
+			file_name = { guifg = palette.text or "#e0def4" },
+			modified = { guifg = palette.gold or "#f6c177" },
+		},
+		bufferline = {},
+	}
+end
+
 -- M.kanagawa = kanagawa()
 -- M.rose_pine = rose_pine()
 -- M.rose_pine_dark = rose_pine_dark()
 -- M.kanagawa_dark = kanagawa_dark()
 -- M.catppuccin_dark = catppuccin_dark()
 -- M.kanagawa_paper = kanagawa_paper()
--- M.kanso = kanso()
+M.kanso = kanso()
 
 M.current_theme = kanso()
 

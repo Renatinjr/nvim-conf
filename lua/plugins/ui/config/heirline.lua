@@ -1,37 +1,126 @@
-local uv = require("commons.uv")
-local str = require("commons.str")
-local tbl = require("commons.tbl")
-local color_hl = require("commons.color.hl")
-local color_hsl = require("commons.color.hsl")
-local spawn = require("commons.spawn")
+local conditions = require("heirline.conditions")
+local uv = vim.uv or vim.loop
+local tbl = {}
+local statusline_bg = "#393836"
 
-local constants = require("utils.constants")
-local conditions = require("plugins.ui.config.heirline-conditions")
+tbl.tbl_get = function(t, ...)
+	local keys = { ... }
+	for _, key in ipairs(keys) do
+		if type(t) ~= "table" then
+			return nil
+		end
+		t = t[key]
+	end
+	return t
+end
 
-local black = "#000000"
-local white = "#ffffff"
-local red = "#FF0000"
-local green = "#008000"
-local blue = "#0000FF"
-local cyan = "#00FFFF"
-local grey = "#808080"
-local orange = "#D2691E"
-local yellow = "#FFFF00"
-local purple = "#800080"
-local magenta = "#FF00FF"
-local bright_black = "#808080"
-local bright_red = "#CD5C5C"
-local bright_green = "#90EE90"
-local bright_yellow = "#FFFFE0"
-local bright_blue = "#ADD8E6"
-local bright_magenta = "#EE82EE"
-local bright_cyan = "#E0FFFF"
-local bright_white = "#C0C0C0"
+tbl.tbl_empty = function(t)
+	return not t or next(t) == nil
+end
 
-local left_slant = ""
-local right_slant = ""
+local constants = {
+	diagnostic = {
+		signs = {
+			error = " ",
+			warn = " ",
+			info = " ",
+			hint = " ",
+		},
+	},
+}
+
+local function get_colors()
+	local normal = vim.api.nvim_get_hl_by_name("Normal", true)
+	local comment = vim.api.nvim_get_hl_by_name("Comment", true)
+	local string_hl = vim.api.nvim_get_hl_by_name("String", true)
+	local function_hl = vim.api.nvim_get_hl_by_name("Function", true)
+	local type_hl = vim.api.nvim_get_hl_by_name("Type", true)
+	local constant = vim.api.nvim_get_hl_by_name("Constant", true)
+	local keyword = vim.api.nvim_get_hl_by_name("Keyword", true)
+	local error_hl = vim.api.nvim_get_hl_by_name("Error", true)
+	local warning = vim.api.nvim_get_hl_by_name("WarningMsg", true)
+	local info = vim.api.nvim_get_hl_by_name("MoreMsg", true)
+		or vim.api.nvim_get_hl_by_name("Question", true)
+		or vim.api.nvim_get_hl_by_name("Directory", true)
+	local identifier = vim.api.nvim_get_hl_by_name("Identifier", true)
+	local statement = vim.api.nvim_get_hl_by_name("Statement", true)
+	local visual = vim.api.nvim_get_hl_by_name("Visual", true)
+	local cursorline = vim.api.nvim_get_hl_by_name("CursorLine", true)
+	local cursorlinenr = vim.api.nvim_get_hl_by_name("CursorLineNr", true)
+	local special = vim.api.nvim_get_hl_by_name("Special", true)
+	local preproc = vim.api.nvim_get_hl_by_name("PreProc", true)
+	local signcolumn = vim.api.nvim_get_hl_by_name("SignColumn", true)
+	local folded = vim.api.nvim_get_hl_by_name("Folded", true)
+	local diffadd = vim.api.nvim_get_hl_by_name("DiffAdd", true)
+	local diffchange = vim.api.nvim_get_hl_by_name("DiffChange", true)
+	local diffdelete = vim.api.nvim_get_hl_by_name("DiffDelete", true)
+
+	-- Helper function to convert color
+	local function hex_color(color_num)
+		if not color_num then
+			return nil
+		end
+		return string.format("#%06x", color_num)
+	end
+
+	-- Return colors based on highlight groups
+	return {
+		-- Basic colors
+		bg = hex_color(normal.background) or "#1e1e2e",
+		fg = hex_color(normal.foreground) or "#cdd6f4",
+
+		-- Mode colors (for text)
+		normal_fg1 = hex_color(normal.foreground) or "#cdd6f4",
+		normal_fg2 = hex_color(comment.foreground) or "#6c7086",
+		normal_fg3 = hex_color(constant.foreground) or "#f9e2af",
+		normal_fg4 = hex_color(identifier.foreground) or "#89dceb",
+
+		-- Mode background colors
+		normal_bg1 = hex_color(type_hl.foreground) or hex_color(function_hl.foreground) or "#89b4fa",
+		normal_bg2 = hex_color(cursorline.background) or hex_color(signcolumn.background) or "#2d2d3e",
+		normal_bg3 = hex_color(folded.background) or "#3a3a4e",
+		normal_bg4 = hex_color(signcolumn.background) or "#090e13",
+
+		-- Insert mode
+		insert_fg = hex_color(normal.foreground) or "#cdd6f4",
+		insert_bg = hex_color(string_hl.foreground) or "#a6e3a1",
+
+		-- Visual mode
+		visual_fg = hex_color(normal.foreground) or "#cdd6f4",
+		visual_bg = hex_color(keyword.foreground) or "#cba6f7",
+
+		-- Replace mode
+		replace_fg = hex_color(normal.foreground) or "#cdd6f4",
+		replace_bg = hex_color(error_hl.foreground) or "#f38ba8",
+
+		-- Command mode
+		command_fg = hex_color(normal.foreground) or "#cdd6f4",
+		command_bg = hex_color(constant.foreground) or "#f9e2af",
+
+		-- Git colors
+		git_dirty = hex_color(warning.foreground) or "#f9e2af",
+		git_ahead = hex_color(diffadd.foreground) or "#a6e3a1",
+		git_behind = hex_color(diffdelete.foreground) or "#f38ba8",
+		git_add = hex_color(diffadd.foreground) or "#a6e3a1",
+		git_change = hex_color(diffchange.foreground) or "#f9e2af",
+		git_delete = hex_color(diffdelete.foreground) or "#f38ba8",
+
+		-- Diagnostic colors
+		diagnostic_error = hex_color(error_hl.foreground) or "#f38ba8",
+		diagnostic_warn = hex_color(warning.foreground) or "#f9e2af",
+		diagnostic_info = hex_color(info.foreground) or "#89dceb",
+
+		-- Background color constant
+		dark_bg = "#090e13",
+	}
+end
+
+-- Initialize colors
+local colors = get_colors()
 
 local OS_UNAME = uv.os_uname()
+local left_slant = ""
+local right_slant = ""
 
 local ModeNames = {
 	["n"] = "NORMAL",
@@ -73,23 +162,23 @@ local ModeNames = {
 }
 
 local ModeHighlights = {
-	NORMAL = { fg = "normal_fg4", bg = "#3e404a", bold = true },
-	["O-PENDING"] = { fg = "normal_fg1", bg = "normal_bg1", bold = true },
-	INSERT = { fg = "insert_fg", bg = "insert_bg", bold = true },
-	VISUAL = { fg = "visual_fg", bg = "visual_bg", bold = true },
-	["V-LINE"] = { fg = "visual_fg", bg = "visual_bg", bold = true },
-	["V-BLOCK"] = { fg = "visual_fg", bg = "visual_bg", bold = true },
-	SELECT = { fg = "visual_fg", bg = "visual_bg", bold = true },
-	["S-LINE"] = { fg = "visual_fg", bg = "visual_bg", bold = true },
-	["S-BLOCK"] = { fg = "visual_fg", bg = "visual_bg", bold = true },
-	REPLACE = { fg = "replace_fg", bg = "replace_bg", bold = true },
-	MORE = { fg = "replace_fg", bg = "replace_bg", bold = true },
-	["V-REPLACE"] = { fg = "replace_fg", bg = "replace_bg", bold = true },
-	COMMAND = { fg = "command_fg", bg = "command_bg", bold = true },
-	EX = { fg = "command_fg", bg = "command_bg", bold = true },
-	CONFIRM = { fg = "command_fg", bg = "command_bg", bold = true },
-	SHELL = { fg = "command_fg", bg = "command_bg", bold = true },
-	TERMINAL = { fg = "command_fg", bg = "command_bg", bold = true },
+	NORMAL = { fg = colors.normal_fg1, bg = "#3e404a", bold = true },
+	["O-PENDING"] = { fg = colors.normal_fg1, bg = colors.normal_bg1, bold = true },
+	INSERT = { fg = colors.insert_fg, bg = colors.insert_bg, bold = true },
+	VISUAL = { fg = colors.visual_fg, bg = colors.visual_bg, bold = true },
+	["V-LINE"] = { fg = colors.visual_fg, bg = colors.visual_bg, bold = true },
+	["V-BLOCK"] = { fg = colors.visual_fg, bg = colors.visual_bg, bold = true },
+	SELECT = { fg = colors.visual_fg, bg = colors.visual_bg, bold = true },
+	["S-LINE"] = { fg = colors.visual_fg, bg = colors.visual_bg, bold = true },
+	["S-BLOCK"] = { fg = colors.visual_fg, bg = colors.visual_bg, bold = true },
+	REPLACE = { fg = colors.replace_fg, bg = colors.replace_bg, bold = true },
+	MORE = { fg = colors.replace_fg, bg = colors.replace_bg, bold = true },
+	["V-REPLACE"] = { fg = colors.replace_fg, bg = colors.replace_bg, bold = true },
+	COMMAND = { fg = colors.command_fg, bg = colors.command_bg, bold = true },
+	EX = { fg = colors.command_fg, bg = colors.command_bg, bold = true },
+	CONFIRM = { fg = colors.command_fg, bg = colors.command_bg, bold = true },
+	SHELL = { fg = colors.command_fg, bg = colors.command_bg, bold = true },
+	TERMINAL = { fg = colors.command_fg, bg = colors.command_bg, bold = true },
 }
 
 local function GetModeName(mode)
@@ -136,21 +225,27 @@ local Mode = {
 		provider = function(self)
 			return " " .. GetOsIcon() .. " "
 		end,
-		{ bold = true },
+		hl = function(self)
+			local mode_hl = GetModeHighlight(self.mode)
+			return { fg = mode_hl.fg, bg = mode_hl.bg, bold = true }
+		end,
 	},
 	-- mode
 	{
 		provider = function(self)
 			return GetModeName(self.mode) .. " "
 		end,
-		{ bold = true },
+		hl = function(self)
+			local mode_hl = GetModeHighlight(self.mode)
+			return { fg = mode_hl.fg, bg = mode_hl.bg, bold = true }
+		end,
 	},
 	-- separator
 	{
 		provider = right_slant,
 		hl = function(self)
 			local mode_hl = GetModeHighlight(self.mode)
-			return { fg = mode_hl.bg, bg = "#090e13" }
+			return { fg = mode_hl.bg, bg = colors.dark_bg }
 		end,
 	},
 }
@@ -159,7 +254,7 @@ local FileName = {
 	init = function(self)
 		self.filename = vim.api.nvim_buf_get_name(0)
 	end,
-	hl = { fg = "normal_fg2", bg = "normal_bg2" },
+	hl = { fg = colors.normal_fg2, bg = colors.normal_bg2 },
 
 	-- file name
 	{
@@ -167,7 +262,7 @@ local FileName = {
 	},
 	{
 		provider = function(self)
-			if str.empty(self.filename) then
+			if self.filename == "" then
 				return ""
 			end
 			local modifiable = vim.api.nvim_get_option_value("modifiable", { buf = 0 })
@@ -186,7 +281,7 @@ local FileName = {
 	-- file size
 	{
 		provider = function(self)
-			if str.empty(self.filename) then
+			if self.filename == "" then
 				return ""
 			end
 			local fstat = uv.fs_stat(self.filename)
@@ -208,119 +303,179 @@ local FileName = {
 	},
 	{
 		provider = right_slant,
-		hl = { fg = "normal_bg2", bg = "normal_bg3" },
+		hl = { fg = colors.normal_bg2, bg = colors.normal_bg3 },
 	},
 }
 
-local git_branch_name_cache = nil
-local git_branch_status_cache = nil
+-- Git status cache
+local git_status_cache = {
+	branch = nil,
+	added = 0,
+	deleted = 0,
+	ahead = 0,
+	behind = 0,
+}
 
+-- Simple git status function
+local function update_git_status_simple()
+	local cwd = vim.fn.getcwd()
+
+	-- Check if we're in a git repo
+	local is_git_repo = vim.fn.system("git rev-parse --is-inside-work-tree 2>/dev/null")
+	if vim.v.shell_error ~= 0 then
+		git_status_cache.branch = nil
+		return
+	end
+
+	-- Get current branch
+	local branch = vim.fn.system("git branch --show-current 2>/dev/null")
+	if vim.v.shell_error == 0 and branch and branch ~= "" then
+		git_status_cache.branch = branch:gsub("%s+", "")
+	else
+		git_status_cache.branch = nil
+		return
+	end
+
+	-- Get diff stats
+	local diff_stats = vim.fn.system("git diff --shortstat 2>/dev/null")
+	if vim.v.shell_error == 0 and diff_stats and diff_stats ~= "" then
+		local added = diff_stats:match("(%d+) insertion")
+		local deleted = diff_stats:match("(%d+) deletion")
+		git_status_cache.added = added and tonumber(added) or 0
+		git_status_cache.deleted = deleted and tonumber(deleted) or 0
+	else
+		git_status_cache.added = 0
+		git_status_cache.deleted = 0
+	end
+
+	-- Get ahead/behind
+	local status = vim.fn.system("git status -sb 2>/dev/null | head -1")
+	if vim.v.shell_error == 0 and status and status ~= "" then
+		local ahead = status:match("%[ahead (%d+)%]")
+		local behind = status:match("%[behind (%d+)%]")
+		git_status_cache.ahead = ahead and tonumber(ahead) or 0
+		git_status_cache.behind = behind and tonumber(behind) or 0
+	else
+		git_status_cache.ahead = 0
+		git_status_cache.behind = 0
+	end
+
+	-- Trigger update
+	vim.api.nvim_exec_autocmds("User", { pattern = "HeirlineGitBranchUpdated" })
+end
+
+-- GitBranch component (simplified)
 local GitBranch = {
-	hl = { fg = "normal_fg3", bg = "#090e13" },
-	update = { "User", pattern = "HeirlineGitBranchUpdated" },
+	condition = function()
+		return git_status_cache.branch ~= nil
+	end,
+
+	init = function(self)
+		self.branch = git_status_cache.branch
+		self.ahead = git_status_cache.ahead
+		self.behind = git_status_cache.behind
+		self.changed = (git_status_cache.added > 0) or (git_status_cache.deleted > 0)
+	end,
+
+	hl = { fg = colors.normal_fg3, bg = colors.dark_bg },
 
 	{
 		provider = function(self)
-			if str.not_empty(git_branch_name_cache) then
-				return "  " .. git_branch_name_cache .. " "
-			else
-				return ""
-			end
+			return "  " .. self.branch .. " "
 		end,
 	},
 	{
-		provider = function(self)
-			if type(git_branch_status_cache) == "table" and git_branch_status_cache["changed"] ~= nil then
-				return "* "
-			else
-				return ""
-			end
+		condition = function(self)
+			return self.changed
 		end,
-		hl = function(self)
-			return { fg = "git_dirty", bg = "#090e13" }
-		end,
+		provider = "* ",
+		hl = { fg = colors.git_dirty, bg = colors.dark_bg },
 	},
 	{
+		condition = function(self)
+			return self.ahead and self.ahead > 0
+		end,
 		provider = function(self)
-			if type(git_branch_status_cache) == "table" and type(git_branch_status_cache["ahead"]) == "number" then
-				return string.format("↑[%d] ", git_branch_status_cache["ahead"])
-			else
-				return ""
-			end
+			return string.format("↑[%d] ", self.ahead)
 		end,
-		hl = function(self)
-			return { fg = "git_ahead", bg = "#090e13" }
-		end,
+		hl = { fg = colors.git_ahead, bg = colors.dark_bg },
 	},
 	{
+		condition = function(self)
+			return self.behind and self.behind > 0
+		end,
 		provider = function(self)
-			if type(git_branch_status_cache) == "table" and type(git_branch_status_cache["behind"]) == "number" then
-				return string.format("↓[%d] ", git_branch_status_cache["behind"])
-			else
-				return ""
-			end
+			return string.format("↓[%d] ", self.behind)
 		end,
-		hl = function(self)
-			return { fg = "git_behind", bg = "#090e13" }
-		end,
+		hl = { fg = colors.git_behind, bg = colors.dark_bg },
 	},
 	{
 		provider = right_slant,
-		hl = { fg = "#090e13", bg = "normal_bg4" },
+		hl = { fg = colors.dark_bg, bg = statusline_bg },
 	},
 }
 
+-- GitDiff component (simplified)
 local GitDiff = {
-	init = function(self)
-		self.summary = {}
-		if vim.fn.exists("*GitGutterGetHunkSummary") > 0 then
-			self.summary = vim.fn["GitGutterGetHunkSummary"]() or {}
-		end
+	condition = function()
+		return git_status_cache.branch ~= nil and (git_status_cache.added > 0 or git_status_cache.deleted > 0)
 	end,
-	hl = { fg = "normal_fg4", bg = "normal_bg4" },
-	update = { "User", pattern = "GitGutter" },
+
+	init = function(self)
+		self.added = git_status_cache.added
+		self.deleted = git_status_cache.deleted
+	end,
+
+	hl = { fg = colors.normal_fg4, bg = statusline_bg },
 
 	{
-		provider = function(self)
-			local value = self.summary[1] or 0
-			if value > 0 then
-				return string.format(" +%d", value)
-			else
-				return ""
-			end
+		condition = function(self)
+			return self.added and self.added > 0
 		end,
-		hl = { fg = "git_add", bg = "normal_bg4" },
+		provider = function(self)
+			return string.format(" 󰜅%d", self.added)
+		end,
+		hl = { fg = colors.git_add, bg = statusline_bg },
 	},
 	{
-		provider = function(self)
-			local value = self.summary[2] or 0
-			if value > 0 then
-				return string.format(" ~%d", value)
-			else
-				return ""
-			end
+		condition = function(self)
+			return self.deleted and self.deleted > 0
 		end,
-		hl = { fg = "git_change", bg = "normal_bg4" },
-	},
-	{
 		provider = function(self)
-			local value = self.summary[3] or 0
-			if value > 0 then
-				return string.format(" -%d", value)
-			else
-				return ""
-			end
+			return string.format(" 󱘹%d", self.deleted)
 		end,
-		hl = { fg = "git_delete", bg = "normal_bg4" },
+		hl = { fg = "#F52700", bg = statusline_bg },
 	},
 }
+
+-- Setup git updates
+local function setup_git_updates()
+	-- Initial update
+	update_git_status_simple()
+
+	-- Update on buffer events
+	vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "FocusGained" }, {
+		callback = function()
+			vim.schedule(update_git_status_simple)
+		end,
+	})
+
+	-- Update every 30 seconds while in a git repo
+	vim.defer_fn(function()
+		vim.schedule(function()
+			if git_status_cache.branch ~= nil then
+				update_git_status_simple()
+			end
+		end)
+	end, 30000)
+end
 
 local LSPActive = {
 	condition = conditions.lsp_attached,
 	update = { "LspAttach", "LspDetach" },
 	{
 		provider = left_slant,
-		hl = { fg = "#090e13", bg = "normal_bg4" },
+		hl = { fg = colors.dark_bg, bg = statusline_bg },
 	},
 
 	{
@@ -331,16 +486,16 @@ local LSPActive = {
 			end
 			return " 󰘦 " .. table.concat(names, " ") .. " "
 		end,
-		hl = { fg = "normal_fg4", bg = "#090e13", bold = true },
+		hl = { fg = colors.normal_fg4, bg = colors.dark_bg, bold = true },
 	},
 	{
 		provider = right_slant,
-		hl = { fg = "#090e13", bg = "normal_bg4" },
+		hl = { fg = colors.dark_bg, bg = statusline_bg },
 	},
 }
 
 local SearchCount = {
-	hl = { fg = "normal_fg1", bg = "normal_bg2" },
+	hl = { fg = colors.normal_fg1, bg = colors.normal_bg2 },
 	provider = function()
 		if vim.v.hlsearch == 0 then
 			return ""
@@ -378,18 +533,18 @@ local function GetDiagnosticText(level)
 end
 
 local DiagnosticColors = {
-	"diagnostic_error",
-	"diagnostic_warn",
-	"diagnostic_info",
-	"#ffe663",
+	colors.diagnostic_error,
+	colors.diagnostic_warn,
+	colors.diagnostic_info,
+	colors.diagnostic_info, -- Using info color for hints as fallback
 }
 
 local function GetDiagnosticHighlight(level)
-	return { fg = DiagnosticColors[level], bg = "normal_bg4" }
+	return { fg = DiagnosticColors[level], bg = statusline_bg }
 end
 
 local Diagnostic = {
-	hl = { fg = "normal_fg1", bg = "normal_bg2" },
+	hl = { fg = colors.normal_fg1, bg = colors.normal_bg2 },
 	update = { "DiagnosticChanged" },
 
 	{
@@ -428,20 +583,20 @@ local FileEncodingIcons = {
 }
 
 local FileEncoding = {
-	hl = { fg = "normal_fg3", bg = "normal_bg3" },
+	hl = { fg = colors.normal_fg3, bg = colors.normal_bg3 },
 	{
 		provider = left_slant,
-		hl = { fg = "#090e13", bg = "normal_bg4" },
+		hl = { fg = colors.normal_bg3, bg = statusline_bg },
 	},
 	{
 		provider = function()
 			local text = (vim.bo.fenc ~= "" and vim.bo.fenc) or vim.o.enc
-			if str.empty(text) then
+			if text == "" then
 				return ""
 			end
 
 			local icon = FileEncodingIcons[text]
-			if str.empty(icon) then
+			if not icon or icon == "" then
 				return " " .. text .. " "
 			else
 				return " " .. icon .. " " .. text .. " "
@@ -460,15 +615,15 @@ local FileFormatIcons = {
 }
 
 local FileFormat = {
-	hl = { fg = "normal_fg3", bg = "normal_bg3" },
+	hl = { fg = colors.normal_fg3, bg = colors.normal_bg3 },
 	provider = function(self)
 		local text = vim.bo.fileformat
-		if str.empty(text) then
+		if text == "" then
 			return ""
 		end
 
 		local icon = FileFormatIcons[text]
-		if str.empty(icon) then
+		if not icon or icon == "" then
 			return " " .. text .. " "
 		else
 			return " " .. icon .. " "
@@ -485,19 +640,19 @@ local FileType = {
 		self.filename_ext = vim.fn.fnamemodify(self.filename, ":e") or ""
 		self.devicons = require("nvim-web-devicons")
 	end,
-	hl = { fg = "normal_fg2", bg = "normal_bg2" },
+	hl = { fg = colors.normal_fg2, bg = colors.normal_bg2 },
 
 	{
 		provider = left_slant,
-		hl = { fg = "normal_bg2", bg = "normal_bg3" },
+		hl = { fg = colors.normal_bg2, bg = colors.normal_bg3 },
 	},
 	{
 		provider = function(self)
-			if str.empty(self.filename_ext) then
+			if self.filename_ext == "" then
 				return ""
 			end
 			local text, _ = self.devicons.get_icon_color(self.filename, self.filename_ext, { default = true })
-			if str.not_empty(text) then
+			if text and text ~= "" then
 				return " " .. text .. " "
 			else
 				return "  "
@@ -505,21 +660,21 @@ local FileType = {
 		end,
 		hl = function(self)
 			local _, color = self.devicons.get_icon_color(self.filename, self.filename_ext, { default = true })
-			if str.not_empty(color) then
-				return { fg = color, bg = "normal_bg2" }
+			if color and color ~= "" then
+				return { fg = color, bg = colors.normal_bg2 }
 			else
-				return { fg = "normal_fg2", bg = "normal_bg2" }
+				return { fg = colors.normal_fg2, bg = colors.normal_bg2 }
 			end
 		end,
 		update = { "BufEnter" },
 	},
 	{
 		provider = function(self)
-			if str.empty(self.filename) then
+			if self.filename == "" then
 				return ""
 			end
 			local ft = vim.filetype.match({ filename = self.filename }) or ""
-			if str.empty(ft) then
+			if ft == "" then
 				return ""
 			end
 			return ft .. " "
@@ -541,7 +696,7 @@ local Location = {
 		provider = left_slant,
 		hl = function(self)
 			local mode_hl = GetModeHighlight(self.mode)
-			return { fg = mode_hl.bg, bg = "normal_bg2", bold = true }
+			return { fg = mode_hl.bg, bg = colors.normal_bg2, bold = true }
 		end,
 	},
 	{
@@ -571,6 +726,7 @@ local Progress = {
 	provider = "  %P ",
 }
 
+-- Main StatusLine
 local StatusLine = {
 	fallthrough = false,
 	{
@@ -582,12 +738,12 @@ local StatusLine = {
 	},
 	{
 		Mode,
-		-- FileName,
+		-- FileName, -- Commented out as per your structure
 		GitBranch,
 		GitDiff,
-		{ provider = "%=", hl = { fg = "#000000", bg = "normal_bg4" } },
+		{ provider = "%=", hl = { fg = "#000000", bg = "#393836" } },
 		LSPActive,
-		{ provider = "%=", hl = { fg = "#000000", bg = "normal_bg4" } },
+		{ provider = "%=", hl = { fg = "#000000", bg = "#393836" } },
 		SearchCount,
 		Diagnostic,
 		FileEncoding,
@@ -599,662 +755,118 @@ local StatusLine = {
 	},
 }
 
--- Get RGB color code from either lualine/airline theme, or fallback to highlighting group, or fallback to default color.
--- A lualine/airline theme usually contains several components:
--- 1. It supports different color on different VIM mode, i.e. it shows different colors on normal/visual/insert/etc modes.
--- 2. It supports 3 color on 3 sections, i.e. the most left/right side, the most center part, and the other two parts between them.
---
----@param has_lualine boolean If have a lualine theme.
----@param lualine_theme table The lualine theme.
----@param has_airline boolean If have an airline theme.
----@param airline_theme table? The airline theme.
----@param mode_name "normal"|"insert"|"visual"|"replace"|"command"|"inactive" Mode name that use to retrieve from lualine/airline.
----@param section "a"|"b"|"c" Section name that use to retrieve from lualine/airline.
----@param attribute "fg"|"bg" Foreground/background attribute that use to retrieve from lualine/airline.
----@param fallback_hls string|string[] Fallback highlighting groups.
----@param fallback_attribute "fg"|"bg" Fallback foreground/background attribute that use to retrieve from the highlighting groups.
----@param fallback_color string? Fallback default color, if none of lualine/airline themes and highlighting groups exists.
----@return string, "lualine"|"airline"|"fallback"
-local function retrieve_color(
-	has_lualine,
-	lualine_theme,
-	has_airline,
-	airline_theme,
-	mode_name,
-	section,
-	attribute,
-	fallback_hls,
-	fallback_attribute,
-	fallback_color
-)
-	local air_section = "airline_" .. section
-	local air_attribute = attribute == "fg" and 1 or 2
-	local air_mode_name = mode_name == "command" and "terminal" or mode_name
+-- Function to update colors and redraw
+local function update_colors()
+	colors = get_colors()
 
-	--- @type string
-	local result
-	--- @type "lualine"|"airline"|"fallback"
-	local source
-
-	if has_lualine and tbl.tbl_get(lualine_theme, mode_name, section, attribute) then
-		result = lualine_theme[mode_name][section][attribute]
-		source = "lualine"
-	elseif has_airline and tbl.tbl_get(airline_theme, air_mode_name, air_section, air_attribute) then
-		---@diagnostic disable-next-line: need-check-nil
-		result = airline_theme[air_mode_name][air_section][air_attribute]
-		source = "airline"
-	end
-
-	if type(result) ~= "string" then
-		result = color_hl.get_color_with_fallback(fallback_hls, fallback_attribute, fallback_color) --[[@as string]]
-		source = "fallback"
-	end
-
-	return result, source
-end
-
--- Get RGB color code from `g:terminal_color_0` ~ `g:terminal_color_10`, or fallback to default color.
---- @param number integer
---- @param fallback string
---- @return string
-local function get_terminal_color(number, fallback)
-	local color_name = string.format("terminal_color_%d", number)
-	local color = vim.g[color_name]
-	if str.not_empty(color) then
-		return color
-	else
-		return fallback
-	end
-end
-
--- Turns #rrggbb -> { red, green, blue }
-local function rgb_str2num(rgb_color_str)
-	if rgb_color_str:find("#") == 1 then
-		rgb_color_str = rgb_color_str:sub(2, #rgb_color_str)
-	end
-	local r = tonumber(rgb_color_str:sub(1, 2), 16)
-	local g = tonumber(rgb_color_str:sub(3, 4), 16)
-	local b = tonumber(rgb_color_str:sub(5, 6), 16)
-	return { red = r, green = g, blue = b }
-end
-
--- Turns { red, green, blue } -> #rrggbb
-local function rgb_num2str(rgb_color_num)
-	local rgb_color_str = string.format("#%02x%02x%02x", rgb_color_num.red, rgb_color_num.green, rgb_color_num.blue)
-	return rgb_color_str
-end
-
--- Returns brightness level of color in range 0 to 1
--- arbitrary value it's basically an weighted average
-local function get_color_brightness(rgb_color)
-	local color = rgb_str2num(rgb_color)
-	local brightness = (color.red * 2 + color.green * 3 + color.blue) / 6
-	return brightness / 256
-end
-
--- Clamps the val between left and right
-local function clamp(val, left, right)
-	if val > right then
-		return right
-	end
-	if val < left then
-		return left
-	end
-	return val
-end
-
--- Changes brightness of rgb_color by percentage
-local function brightness_modifier(rgb_color, percentage)
-	local color = rgb_str2num(rgb_color)
-	color.red = clamp(color.red + (color.red * percentage / 100), 0, 255)
-	color.green = clamp(color.green + (color.green * percentage / 100), 0, 255)
-	color.blue = clamp(color.blue + (color.blue * percentage / 100), 0, 255)
-	return rgb_num2str(color)
-end
-
--- Convert RGB color code into HSL color object.
-local function rgb_to_hsl(rgb)
-	-- Handle "NONE" and other invalid values
-	if not rgb or type(rgb) ~= "string" or rgb == "" or rgb:upper() == "NONE" then
-		-- Return a default HSL value that represents "no color"
-		-- You might want to handle this differently based on your use case
-		return color_hsl.new(0, 0, 0, "NONE")
-	end
-
-	-- Validate RGB format
-	if not rgb:match("^#%x%x%x%x%x%x$") then
-		print("WARNING: Invalid RGB format: " .. tostring(rgb))
-		-- Return default or handle appropriately
-		return color_hsl.new(0, 0, 0, "#000000")
-	end
-
-	local h, s, l = color_hsl.rgb_string_to_hsl(rgb)
-	return color_hsl.new(h, s, l, rgb)
-end
-
--- Darker/lighter RGB color code with a 0.0 ~ 1.0 parameter.
---
---- @param rgb string The RGB color code.
---- @param value number The 0.0 ~ 1.0 parameter.
-local function shade_rgb(rgb, value)
-	if not rgb or rgb == "" then
-		return rgb -- Return as-is or provide default
-	end
-	if vim.o.background == "light" then
-		return rgb_to_hsl(rgb):tint(value):to_rgb()
-	else
-		return rgb_to_hsl(rgb):shade(value):to_rgb()
-	end
-end
-
----@param colorname string?
----@return table<string, string>
-local function setup_colors(colorname)
-	local shade_level1 = 0.3
-	local shade_level2 = 0.5
-	local shade_level3 = 0.7
-
-	local diagnostic_error = color_hl.get_color_with_fallback({ "DiagnosticSignError", "ErrorMsg" }, "fg", red)
-	local diagnostic_warn = color_hl.get_color_with_fallback({ "DiagnosticSignWarn", "WarningMsg" }, "fg", yellow)
-	local diagnostic_info = color_hl.get_color_with_fallback({ "DiagnosticSignInfo", "None" }, "fg", cyan)
-	local diagnostic_hint = color_hl.get_color_with_fallback({ "DiagnosticSignHint", "Comment" }, "fg", grey)
-	local git_add =
-		color_hl.get_color_with_fallback({ "GitSignsAdd", "GitGutterAdd", "diffAdded", "DiffAdd" }, "fg", green)
-	local git_change = color_hl.get_color_with_fallback(
-		{ "GitSignsChange", "GitGutterChange", "diffChanged", "DiffChange" },
-		"fg",
-		yellow
-	)
-	local git_delete = color_hl.get_color_with_fallback(
-		{ "GitSignsDelete", "GitGutterDelete", "diffRemoved", "DiffDelete" },
-		"fg",
-		red
-	)
-	local git_ahead = get_terminal_color(3, yellow)
-	local git_behind = get_terminal_color(3, yellow)
-	local git_dirty = get_terminal_color(1, magenta)
-
-	local text_bg, text_fg
-	local normal_bg, normal_fg
-	local normal_bg1, normal_fg1
-	local normal_bg2, normal_fg2
-	local normal_bg3, normal_fg3
-	local normal_bg4, normal_fg4
-	local insert_bg, insert_fg
-	local visual_bg, visual_fg
-	local replace_bg, replace_fg
-	local command_bg, command_fg
-
-	-- The `lualine` is the most popular statusline plugin in Neovim community.
-	-- The `airline` is the one of the most popular statusline plugin in Vim community.
-	-- Both of them provide a way to integrate with third-party colorschemes.
-	--
-	-- See:
-	-- * [lualine doc - SETTING A THEME](https://github.com/nvim-lualine/lualine.nvim/blob/544dd1583f9bb27b393f598475c89809c4d5e86b/doc/lualine.txt#L178-L205)
-	-- * [lualine wiki - Writing a theme](https://github.com/nvim-lualine/lualine.nvim/wiki/Writing-a-theme)
-	-- * [airline doc - WRITING THEMES](https://github.com/vim-airline/vim-airline/blob/02894b6ef4752afd8579fc837aec5fb4f62409f7/doc/airline.txt#L2099-L2111)
-	--
-	-- So if a colorscheme provides either lualine or airline theme, let's directly use them.
-	-- Since they're carefully designed by the author of the colorscheme.
-
-	-- If current colorscheme provides a lualine theme.
-	local has_lualine, lualine_theme = pcall(require, string.format("lualine.themes.%s", colorname))
-
-	-- If current colorscheme provides an airline theme.
-	local has_airline = false
-	local airline_theme_name = string.format("airline#themes#%s#palette", colorname)
-	local airline_theme = nil
-	if not has_lualine and vim.fn.exists("g:" .. airline_theme_name) > 0 then
-		has_airline = true
-		vim.cmd("let heirline_tmp=g:" .. airline_theme_name)
-		airline_theme = vim.g[airline_theme_name]
-	end
-
-	-- Retrieve RGB color from lualine/airline, or fallback to a highlighting group, or fallback to a default color.
-	text_bg = retrieve_color(
-		has_lualine,
-		lualine_theme,
-		has_airline,
-		airline_theme,
-		"normal",
-		"a",
-		"bg",
-		{ "Normal" },
-		"bg",
-		black
-	)
-	text_fg = retrieve_color(
-		has_lualine,
-		lualine_theme,
-		has_airline,
-		airline_theme,
-		"normal",
-		"a",
-		"fg",
-		{ "Normal" },
-		"fg",
-		white
-	)
-	-- print(string.format("text bg/fg:%s/%s", vim.inspect(text_bg), vim.inspect(text_fg)))
-
-	-- local normal_bg_derives = derive_rgb(get_terminal_color(0, magenta), 6)
-	local normal_bg_source
-
-	normal_bg, normal_bg_source = retrieve_color(
-		has_lualine,
-		lualine_theme,
-		has_airline,
-		airline_theme,
-		"normal",
-		"a",
-		"bg",
-		{ "StatusLine", "PmenuSel", "PmenuThumb", "TabLineSel" },
-		"bg",
-		get_terminal_color(0, magenta)
-	)
-	normal_fg = retrieve_color(
-		has_lualine,
-		lualine_theme,
-		has_airline,
-		airline_theme,
-		"normal",
-		"a",
-		"fg",
-		{},
-		"fg",
-		text_bg -- or black
-	)
-	normal_bg1 = normal_bg
-	normal_fg1 = normal_fg
-
-	normal_bg2 = retrieve_color(
-		has_lualine,
-		lualine_theme,
-		has_airline,
-		airline_theme,
-		"normal",
-		"b",
-		"bg",
-		{},
-		"bg",
-		shade_rgb(get_terminal_color(0, magenta), shade_level1)
-	)
-	normal_fg2 = retrieve_color(
-		has_lualine,
-		lualine_theme,
-		has_airline,
-		airline_theme,
-		"normal",
-		"b",
-		"fg",
-		{},
-		"fg",
-		text_fg -- or white
-	)
-	normal_bg3 = retrieve_color(
-		has_lualine,
-		lualine_theme,
-		has_airline,
-		airline_theme,
-		"normal",
-		"c",
-		"bg",
-		{},
-		"bg",
-		shade_rgb(get_terminal_color(0, magenta), shade_level2)
-	)
-	normal_fg3 = retrieve_color(
-		has_lualine,
-		lualine_theme,
-		has_airline,
-		airline_theme,
-		"normal",
-		"c",
-		"fg",
-		{},
-		"fg",
-		text_fg -- or white
-	)
-	if normal_bg_source ~= "fallback" then
-		normal_bg4 = shade_rgb(normal_bg3, shade_level1)
-	else
-		normal_bg4 = shade_rgb(get_terminal_color(0, magenta), shade_level3)
-	end
-	normal_fg4 = normal_fg3
-
-	-- print(string.format("1-normal source:%s", vim.inspect(normal_bg_source)))
-
-	insert_bg = retrieve_color(
-		has_lualine,
-		lualine_theme,
-		has_airline,
-		airline_theme,
-		"insert",
-		"a",
-		"bg",
-		{ "String", "MoreMsg" },
-		"fg",
-		get_terminal_color(2, green)
-	)
-	insert_fg =
-		retrieve_color(has_lualine, lualine_theme, has_airline, airline_theme, "insert", "a", "fg", {}, "fg", text_bg)
-	visual_bg = retrieve_color(
-		has_lualine,
-		lualine_theme,
-		has_airline,
-		airline_theme,
-		"visual",
-		"a",
-		"bg",
-		{ "Special", "Boolean", "Constant" },
-		"fg",
-		get_terminal_color(3, yellow)
-	)
-	visual_fg =
-		retrieve_color(has_lualine, lualine_theme, has_airline, airline_theme, "visual", "a", "fg", {}, "fg", text_bg)
-	replace_bg = retrieve_color(
-		has_lualine,
-		lualine_theme,
-		has_airline,
-		airline_theme,
-		"replace",
-		"a",
-		"bg",
-		{ "Number", "Type" },
-		"fg",
-		get_terminal_color(4, blue)
-	)
-	replace_fg =
-		retrieve_color(has_lualine, lualine_theme, has_airline, airline_theme, "replace", "a", "fg", {}, "fg", text_bg)
-	command_bg = retrieve_color(
-		has_lualine,
-		lualine_theme,
-		has_airline,
-		airline_theme,
-		"command",
-		"a",
-		"bg",
-		{ "Identifier" },
-		"fg",
-		get_terminal_color(1, red)
-	)
-	command_fg =
-		retrieve_color(has_lualine, lualine_theme, has_airline, airline_theme, "command", "a", "fg", {}, "fg", text_bg)
-	-- print(string.format("1-text bg/fg:%s/%s", vim.inspect(text_bg), vim.inspect(text_fg)))
-
-	if not has_lualine and not has_airline then
-		local background_color = color_hl.get_color("Normal", "bg")
-		if background_color then
-			local parameter = get_color_brightness(background_color) > 0.5 and -10 or 10
-			normal_bg = brightness_modifier(normal_bg, parameter)
-			normal_bg1 = normal_bg
-			if get_color_brightness(normal_bg1) < 0.5 then
-				normal_fg = text_fg
-				normal_fg1 = text_fg
-			end
-
-			-- local normal_bg_derives2 = derive_rgb(normal_bg1, 6)
-			-- print(
-			--   string.format(
-			--     "2-normal source:%s, derives2:%s",
-			--     vim.inspect(normal_bg_source),
-			--     vim.inspect(normal_bg_derives2)
-			--   )
-			-- )
-			-- print(string.format("normal bg derives2:%s", vim.inspect(normal_bg_derives2)))
-			normal_bg2 = shade_rgb(normal_bg, shade_level1)
-			if get_color_brightness(normal_bg2) > 0.5 then
-				normal_fg2 = text_bg
-			end
-			normal_bg3 = shade_rgb(normal_bg, shade_level2)
-			if get_color_brightness(normal_bg3) > 0.5 then
-				normal_fg3 = text_bg
-			end
-			normal_bg4 = shade_rgb(normal_bg, shade_level3)
-			if get_color_brightness(normal_bg4) > 0.5 then
-				normal_fg4 = text_bg
-			end
-			-- print(string.format("2-text bg/fg:%s/%s", vim.inspect(text_bg), vim.inspect(text_fg)))
-			-- print(
-			--   string.format(
-			--     "text bg/fg:%s/%s, normal bg1/fg1:%s/%s,bg2/fg2:%s/%s,bg3/fg3:%s/%s,bg4/fg4:%s/%s",
-			--     vim.inspect(text_bg),
-			--     vim.inspect(text_fg),
-			--     vim.inspect(normal_bg1),
-			--     vim.inspect(normal_fg1),
-			--     vim.inspect(normal_bg2),
-			--     vim.inspect(normal_fg2),
-			--     vim.inspect(normal_bg3),
-			--     vim.inspect(normal_fg3),
-			--     vim.inspect(normal_bg4),
-			--     vim.inspect(normal_fg4)
-			--   )
-			-- )
-
-			-- normal_bg2 = shade_rgb(normal_bg, 0.5)
-			-- if get_color_brightness(normal_bg2) > 0.5 then
-			--   normal_fg2 = text_bg
-			-- end
-			-- normal_bg3 = shade_rgb(normal_bg, shade_level2)
-			-- if get_color_brightness(normal_bg3) > 0.5 then
-			--   normal_fg3 = text_bg
-			-- end
-			-- normal_bg4 = shade_rgb(normal_bg, shade_level3)
-			-- if get_color_brightness(normal_bg4) > 0.5 then
-			--   normal_fg4 = text_bg
-			-- end
-
-			insert_bg = brightness_modifier(insert_bg, parameter)
-			if get_color_brightness(insert_bg) < 0.5 then
-				insert_fg = text_fg
-			end
-			visual_bg = brightness_modifier(visual_bg, parameter)
-			if get_color_brightness(visual_bg) < 0.5 then
-				visual_fg = text_fg
-			end
-			replace_bg = brightness_modifier(replace_bg, parameter)
-			if get_color_brightness(replace_bg) < 0.5 then
-				replace_fg = text_fg
-			end
-			command_bg = brightness_modifier(command_bg, parameter)
-			if get_color_brightness(command_bg) < 0.5 then
-				command_fg = text_fg
-			end
-		end
-	end
-
-	return {
-		text_bg = text_bg,
-		text_fg = text_fg,
-		black = black,
-		white = white,
-		red = red,
-		green = green,
-		blue = blue,
-		cyan = cyan,
-		grey = grey,
-		orange = orange,
-		yellow = yellow,
-		purple = purple,
-		magenta = magenta,
-		bright_black = bright_black,
-		bright_red = bright_red,
-		bright_green = bright_green,
-		bright_yellow = bright_yellow,
-		bright_blue = bright_blue,
-		bright_magenta = bright_magenta,
-		bright_cyan = bright_cyan,
-		bright_white = bright_white,
-		normal_bg1 = normal_bg1,
-		normal_fg1 = normal_fg1,
-		normal_bg2 = normal_bg2,
-		normal_fg2 = normal_fg2,
-		normal_bg3 = normal_bg3,
-		normal_fg3 = normal_fg3,
-		normal_bg4 = normal_bg4,
-		normal_fg4 = normal_fg4,
-		insert_bg = insert_bg,
-		insert_fg = insert_fg,
-		visual_bg = visual_bg,
-		visual_fg = visual_fg,
-		replace_bg = replace_bg,
-		replace_fg = replace_fg,
-		command_bg = command_bg,
-		command_fg = command_fg,
-		diagnostic_error = diagnostic_error,
-		diagnostic_warn = diagnostic_warn,
-		diagnostic_info = diagnostic_info,
-		diagnostic_hint = diagnostic_hint,
-		git_add = git_add,
-		git_change = git_change,
-		git_delete = git_delete,
-		git_ahead = git_ahead,
-		git_behind = git_behind,
-		git_dirty = git_dirty,
+	-- Update ModeHighlights with new colors
+	ModeHighlights = {
+		NORMAL = { fg = colors.normal_fg1, bg = "#3e404a", bold = true },
+		["O-PENDING"] = { fg = colors.normal_fg1, bg = colors.normal_bg1, bold = true },
+		INSERT = { fg = colors.insert_fg, bg = colors.insert_bg, bold = true },
+		VISUAL = { fg = colors.visual_fg, bg = colors.visual_bg, bold = true },
+		["V-LINE"] = { fg = colors.visual_fg, bg = colors.visual_bg, bold = true },
+		["V-BLOCK"] = { fg = colors.visual_fg, bg = colors.visual_bg, bold = true },
+		SELECT = { fg = colors.visual_fg, bg = colors.visual_bg, bold = true },
+		["S-LINE"] = { fg = colors.visual_fg, bg = colors.visual_bg, bold = true },
+		["S-BLOCK"] = { fg = colors.visual_fg, bg = colors.visual_bg, bold = true },
+		REPLACE = { fg = colors.replace_fg, bg = colors.replace_bg, bold = true },
+		MORE = { fg = colors.replace_fg, bg = colors.replace_bg, bold = true },
+		["V-REPLACE"] = { fg = colors.replace_fg, bg = colors.replace_bg, bold = true },
+		COMMAND = { fg = colors.command_fg, bg = colors.command_bg, bold = true },
+		EX = { fg = colors.command_fg, bg = colors.command_bg, bold = true },
+		CONFIRM = { fg = colors.command_fg, bg = colors.command_bg, bold = true },
+		SHELL = { fg = colors.command_fg, bg = colors.command_bg, bold = true },
+		TERMINAL = { fg = colors.command_fg, bg = colors.command_bg, bold = true },
 	}
+
+	-- Update DiagnosticColors
+	DiagnosticColors = {
+		colors.diagnostic_error,
+		colors.diagnostic_warn,
+		colors.diagnostic_info,
+		colors.diagnostic_info,
+	}
+
+	-- Force redraw of statusline
+	vim.cmd("redrawstatus")
 end
 
+-- Setup Heirline
 require("heirline").setup({
 	statusline = StatusLine,
 	opts = {
-		colors = setup_colors(vim.g.colors_name),
+		colors = colors,
 	},
 })
 
-local heirline_augroup = vim.api.nvim_create_augroup("heirline_augroup", { clear = true })
+-- Update colors on colorscheme change
 vim.api.nvim_create_autocmd("ColorScheme", {
-	group = heirline_augroup,
-	callback = function(event)
-		local colorname = event.match
-		require("heirline.utils").on_colorscheme(setup_colors(colorname))
-	end,
-})
-vim.api.nvim_create_autocmd("VimEnter", {
-	group = heirline_augroup,
 	callback = function()
-		local colorname = vim.g.colors_name
-		require("heirline.utils").on_colorscheme(setup_colors(colorname))
+		vim.schedule(function()
+			update_colors()
+		end)
 	end,
 })
 
--- When current buffer is a file, get its directory.
---- @return string?
-local function get_buffer_dir()
-	local bufnr = vim.api.nvim_get_current_buf()
-	if type(bufnr) == "number" and bufnr > 0 then
-		local bufname = vim.api.nvim_buf_get_name(bufnr)
-		if type(bufname) == "string" and string.len(bufname) > 0 then
-			local bufdir = vim.fn.fnamemodify(bufname, ":h")
-			if type(bufdir) == "string" and string.len(bufdir) > 0 and vim.fn.isdirectory(bufdir) > 0 then
-				return bufdir
-			end
-		end
-	end
+-- Setup git integration
+setup_git_updates()
 
-	return nil
+-- Also update colors when Neovim starts
+vim.schedule(function()
+	update_colors()
+end)
+
+-- Manual refresh function for git status
+
+-- Optional: Debug functions
+_G.print_heirline_colors = function()
+	print("Current heirline colors:")
+	print(vim.inspect(colors))
 end
 
--- Parse the output lines of `git status -b --porcelain=v2`.
--- Get the branch name, ahead count, behind count, and if changed.
---
---- @param status_lines string[]
---- @return {branch:string?,ahead:integer?,behind:integer?,changed:boolean?}?
-local function parse_git_status(status_lines)
-	local result = {}
-	for _, line in ipairs(status_lines) do
-		if str.startswith(line, "# branch.head") then
-			local branch_name = string.sub(line, 14)
-			result["branch"] = str.trim(branch_name)
-		end
-		if str.startswith(line, "# branch.ab") then
-			local ab_splits = str.split(line, " ", { trimempty = true })
-			if tbl.list_not_empty(ab_splits) then
-				for _, ab in ipairs(ab_splits) do
-					if str.startswith(ab, "+") and string.len(ab) > 1 then
-						local a_count = tonumber(string.sub(ab, 2))
-						if type(a_count) == "number" and a_count > 0 then
-							result["ahead"] = a_count
-						end
-					end
-					if str.startswith(ab, "-") and string.len(ab) > 1 then
-						local b_count = tonumber(string.sub(ab, 2))
-						if type(b_count) == "number" and b_count > 0 then
-							result["behind"] = b_count
-						end
-					end
-				end
-			end
-		end
-		if not str.startswith(line, "# branch") then
-			local changed_splits = str.split(line, " ", { plain = true, trimempty = true })
-			if tbl.list_not_empty(changed_splits) and tonumber(changed_splits[1]) ~= nil then
-				result["changed"] = true
-			end
-		end
-	end
-
-	if tbl.tbl_not_empty(result) then
-		return result
-	else
-		return nil
-	end
+_G.check_git_status = function()
+	print("Git status cache:")
+	print(vim.inspect(git_status_cache))
 end
 
-local updating_git_branch = false
-
-local function update_git_branch()
-	if updating_git_branch then
-		return
-	end
-	updating_git_branch = true
-
-	local cwd = get_buffer_dir()
-	local status_info = {}
-	local failed_get_status = false
-	spawn.detached({ "git", "-c", "color.status=never", "status", "-b", "--porcelain=v2" }, {
-		cwd = cwd,
-		on_stdout = function(line)
-			if type(line) == "string" then
-				table.insert(status_info, line)
-			end
-		end,
-		on_stderr = function()
-			status_info = nil
-		end,
-	}, function(completed)
-		if not failed_get_status and tbl.tbl_get(completed, "exitcode") == 0 and tbl.list_not_empty(status_info) then
-			local branch_status = parse_git_status(status_info)
-
-			if
-				type(branch_status) == "table"
-				and type(branch_status.branch) == "string"
-				and string.len(branch_status.branch) > 0
-			then
-				git_branch_name_cache = branch_status.branch
-			end
-
-			if tbl.tbl_not_empty(branch_status) then
-				git_branch_status_cache = branch_status
-			else
-				git_branch_status_cache = nil
-			end
-		end
-		vim.schedule(function()
-			vim.api.nvim_exec_autocmds("User", {
-				pattern = "HeirlineGitBranchUpdated",
-				modeline = false,
-			})
-			vim.schedule(function()
-				updating_git_branch = false
-			end)
-		end)
-	end)
-end
-
-vim.api.nvim_create_autocmd(
-	{ "FocusGained", "FocusLost", "TermLeave", "TermClose", "DirChanged", "BufEnter", "VimEnter" },
-	{
-		group = heirline_augroup,
-		callback = update_git_branch,
+_G.check_highlight_groups = function()
+	local groups = {
+		"Normal",
+		"Comment",
+		"String",
+		"Function",
+		"Type",
+		"Constant",
+		"Keyword",
+		"Error",
+		"WarningMsg",
+		"MoreMsg",
+		"Identifier",
+		"Statement",
+		"Visual",
+		"CursorLineNr",
+		"Special",
+		"PreProc",
+		"Directory",
+		"Question",
+		"SignColumn",
+		"CursorLine",
+		"Folded",
+		"DiffAdd",
+		"DiffChange",
+		"DiffDelete",
 	}
-)
+
+	print("Checking highlight groups:")
+	for _, group in ipairs(groups) do
+		local success, hl = pcall(vim.api.nvim_get_hl_by_name, group, true)
+		if success then
+			local fg = hl.foreground and string.format("#%06x", hl.foreground) or "None"
+			local bg = hl.background and string.format("#%06x", hl.background) or "None"
+			print(string.format("%-15s: fg=%s, bg=%s", group, fg, bg))
+		else
+			print(string.format("%-15s: Not found", group))
+		end
+	end
+end
