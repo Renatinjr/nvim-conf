@@ -141,7 +141,7 @@ return {
 			vim.api.nvim_set_hl(0, "NvimTreeClosedFolderIcon", { fg = "#64748b" }) -- Sets closed folder icon to green
 			vim.api.nvim_set_hl(0, "NvimTreeFolderArrowClosed", { fg = "#64748b" }) -- Red arrow when closed
 			vim.api.nvim_set_hl(0, "NvimTreeFolderArrowOpen", { fg = "#64748b" }) -- Green arrow when open
-			vim.cmd("colorscheme kanso-zen")
+			-- vim.cmd("colorscheme kanso-zen")
 			vim.opt.background = "dark"
 			-- vim.api.nvim_set_hl(0, "WinSeparator", { fg = "#1F1F28" })
 		end,
@@ -314,6 +314,218 @@ return {
 			vim.api.nvim_set_hl(0, "TabLine", { bg = "#0a0912", fg = "#6e6a86" })
 			vim.api.nvim_set_hl(0, "TabLineSel", { bg = "#0f0d1a", fg = "#e0def4", bold = true })
 			vim.api.nvim_set_hl(0, "TabLineFill", { bg = "#0a0912" })
+		end,
+	},
+	{
+		"rebelot/kanagawa.nvim",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			require("kanagawa").setup({
+				-- Kanagawa has three main variants: wave (default), dragon, lotus
+				-- "dragon" is the darker variant similar to what you're looking for
+				theme = "dragon",
+
+				-- Style overrides
+				overrides = function(colors)
+					local theme = colors.theme
+					local gutter_bg = "#090e13"
+					local custom_bg = "#0A0E14"
+
+					return {
+						-- Gutter and line numbers
+						SignColumn = { bg = gutter_bg },
+						LineNr = {
+							bg = gutter_bg,
+							fg = colors.fujiGray or "#727169",
+						},
+						CursorLineNr = {
+							bg = gutter_bg,
+							fg = colors.fujiWhite or "#DCD7BA",
+							bold = true,
+						},
+						FoldColumn = {
+							bg = gutter_bg,
+							fg = colors.fujiGray or "#727169",
+						},
+
+						-- CMP styling (using Kanagawa's built-in groups where possible)
+						CmpItemAbbr = { fg = colors.fujiWhite or "#DCD7BA" },
+						CmpItemAbbrMatch = {
+							fg = colors.crystalBlue or "#7E9CD8",
+							bold = true,
+						},
+						CmpItemAbbrMatchFuzzy = {
+							fg = colors.crystalBlue or "#7E9CD8",
+							bold = true,
+						},
+						CmpItemMenu = { fg = colors.fujiGray or "#727169" },
+
+						-- Cmp item kinds with vibrant colors
+						CmpItemKindText = { fg = colors.fujiWhite or "#DCD7BA" },
+						CmpItemKindFunction = { fg = colors.crystalBlue or "#7E9CD8" },
+						CmpItemKindVariable = { fg = colors.peachRed or "#E46876" },
+						CmpItemKindClass = { fg = colors.autumnYellow or "#FFA066" },
+						CmpItemKindInterface = { fg = colors.lotusPurple2 or "#957FB8" },
+						CmpItemKindModule = { fg = colors.surimiOrange or "#FF9E64" },
+						CmpItemKindProperty = { fg = colors.springGreen or "#98BB6C" },
+						CmpItemKindKeyword = { fg = colors.sakuraPink or "#D27E99" },
+						CmpItemKindSnippet = { fg = colors.waveAqua2 or "#7FB4CA" },
+
+						-- Cmp borders and selection
+						CmpBorder = { fg = colors.fujiGray or "#54546D", bg = colors.bg_dark or "#0A0E14" },
+						CmpDocBorder = { bg = colors.bg_dark or "#0A0E14" },
+
+						-- Pmenu (used by cmp)
+						Pmenu = { bg = colors.bg_dark or "#0A0E14" },
+						PmenuSel = {
+							bg = colors.bg_highlight or "#2A2A37",
+							fg = colors.crystalBlue or "#7E9CD8",
+							bold = true,
+						},
+
+						-- Window separators
+						WinSeparator = {
+							fg = colors.bg_dark or "#0A0E14",
+							bg = colors.bg_dark or "#0A0E14",
+						},
+
+						-- Tree styling
+						NvimTreeVertSplit = {
+							bg = custom_bg,
+							fg = custom_bg,
+						},
+						NvimTreeWinSeparator = {
+							bg = custom_bg,
+							fg = custom_bg,
+						},
+
+						-- Background overrides
+						Normal = { bg = custom_bg },
+						NormalFloat = { bg = custom_bg },
+						NormalNC = { bg = custom_bg },
+
+						-- Tree folder icons (already defined, but you can override)
+						NvimTreeFolderIcon = { fg = colors.fujiGray or "#64748b" },
+						NvimTreeOpenedFolderIcon = { fg = colors.fujiGray or "#64748b" },
+						NvimTreeClosedFolderIcon = { fg = colors.fujiGray or "#64748b" },
+
+						-- Additional customizations from your config
+						FzfLuaPointer = { fg = colors.carpYellow or "#E6C384" },
+
+						-- Optional: Make comments italic if desired
+						Comment = { fg = colors.fujiGray, italic = true },
+
+						-- Optional: Make keywords italic
+						["@keyword"] = { italic = true },
+						["@type.qualifier"] = { italic = true },
+					}
+				end,
+
+				-- Global settings
+				compile = true, -- enable compiling the colorscheme
+				undercurl = true, -- enable undercurls
+				commentStyle = { italic = true },
+				functionStyle = {},
+				keywordStyle = { italic = true },
+				statementStyle = {},
+				typeStyle = {},
+				variablebuiltinStyle = {},
+
+				transparent = false, -- do not set background color
+				dimInactive = false, -- dim inactive window `:h hl-NormalNC`
+				terminalColors = true, -- define vim.g.terminal_color_{0,17}
+
+				colors = {
+					-- You can override palette colors here if needed
+					palette = {},
+					theme = {
+						-- Theme overrides - dragon is already dark, but you can customize further
+						dragon = {
+							bg = "#0A0E14", -- Your custom background
+							bg_dark = "#090e13", -- Darker background for gutters
+							bg_darker = "#080c11", -- Even darker
+						},
+					},
+				},
+
+				-- Plugin integrations
+				-- Kanagawa has built-in support for many plugins
+				integrations = {
+					cmp = true,
+					gitsigns = true,
+					telescope = {
+						enabled = true,
+						-- style = "nvchad" -- Optional: different telescope styles
+					},
+					treesitter = true,
+					treesitter_context = true,
+					native_lsp = {
+						enabled = true,
+						virtual_text = {
+							errors = { "italic" },
+							hints = { "italic" },
+							warnings = { "italic" },
+							information = { "italic" },
+						},
+						underlines = {
+							errors = { "underline" },
+							hints = { "underline" },
+							warnings = { "underline" },
+							information = { "underline" },
+						},
+					},
+					lsp_trouble = true,
+					which_key = true,
+					indent_blankline = {
+						enabled = true,
+						colored_indent_levels = false,
+					},
+					dashboard = true,
+					neogit = true,
+					vim_sneak = true,
+					fern = false, -- Kanagawa doesn't have fern by default, but overrides will work
+					barbar = false, -- Kanagawa doesn't have barbar by default
+					bufferline = {
+						enabled = true,
+						colors = {
+							-- Optional: customize bufferline colors
+						},
+					},
+					markdown = true,
+					lightspeed = true,
+					ts_rainbow = true,
+					hop = true,
+					notify = true,
+					symbols_outline = true,
+					mini = {
+						enabled = true,
+						indentscope_color = "", -- let Kanagawa decide
+					},
+					neotree = {
+						enabled = true, -- NvimTree alternative
+					},
+					nvimtree = true,
+				},
+			})
+
+			-- Apply the colorscheme
+			vim.cmd("colorscheme kanagawa-dragon")
+			vim.opt.background = "dark"
+
+			-- Additional custom highlights (using Kanagawa's color names)
+			vim.api.nvim_set_hl(0, "NvimTreeFolderArrowClosed", { fg = "#64748b" })
+			vim.api.nvim_set_hl(0, "NvimTreeFolderArrowOpen", { fg = "#64748b" })
+
+			-- Optional: If you want to use NvimTree instead of neotree
+			-- These will override the Kanagawa defaults
+			local colors = require("kanagawa.colors").setup({ theme = "dragon" })
+			vim.api.nvim_set_hl(0, "NvimTreeFolderIcon", { fg = colors.palette.fujiGray })
+			vim.api.nvim_set_hl(0, "NvimTreeOpenedFolderIcon", { fg = colors.palette.fujiGray })
+			vim.api.nvim_set_hl(0, "NvimTreeClosedFolderIcon", { fg = colors.palette.fujiGray })
+
+			-- Set WinSeparator color if not already set in overrides
+			vim.api.nvim_set_hl(0, "WinSeparator", { fg = "#0A0E14", bg = "#0A0E14" })
 		end,
 	},
 }
